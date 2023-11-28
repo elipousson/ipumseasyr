@@ -1,0 +1,57 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# ipumseasyr
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of ipumseasyr is to ...
+
+## Installation
+
+You can install the development version of ipumseasyr like so:
+
+``` r
+# pak::pkg_install("elipousson/ipumseasyr")
+```
+
+## Example
+
+```{r example}
+library(ipumseasyr)
+## basic example code
+```
+
+
+```{r define_nhgis_ts_extract}
+state_population_extract <- define_nhgis_ts_extract(
+  year = seq(1990, 2010, by = 10),
+  tables = "CL8",
+  geography = "state"
+)
+
+state_population_extract
+```
+
+
+```{r get_nhgis_ts_data}
+nhgis_extracts <- get_nhgis_extract_history()
+
+state_population <- get_nhgis_ts_data(extract = nhgis_extracts[[1]],
+                                      down)
+
+dplyr::glimpse(state_population)
+```
