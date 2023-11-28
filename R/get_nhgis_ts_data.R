@@ -1,0 +1,235 @@
+#' List NHGIS time series tables
+#'
+#' Use `ipumsr::get_metadata_nhgis()` with `type = "time_series_tables"` to
+#' return a data frame of time series tables. Optionally filter by geographical
+#' integration type "nominal" or "standardized" ("2010" or "standardized to
+#' 2010" also work).
+#'
+#' @param ... Additional parameters passed to `ipumsr::get_metadata_nhgis()`
+#' @param integration Optional filter for geographical integration.
+list_nhgis_ts_tables <- function(...,
+                                 cache = TRUE,
+                                 refresh = FALSE,
+                                 integration = NULL) {
+  cache_path <- file.path(
+    ipumsr_cache_dir(), "nhgis_time_series_tables.csv"
+  )
+
+  tables <- get_ipumsr_cache(
+    {
+      ipumsr::get_metadata_nhgis(
+        type = "time_series_tables",
+        ...
+      )
+    },
+    file = "nhgis_time_series_tables.rds",
+    path = ipumsr_cache_dir(),
+    refresh = refresh
+  )
+
+  if (cache && !file.exists(cache_path)) {
+    check_installed("readr")
+    readr::write_rds(tables, file = cache_path)
+  }
+
+  if (!is.null(integration)) {
+    integration <- switch(tolower(integration),
+      "nominal" = "Nominal",
+      "2010" = "Standardized to 2010",
+      "standardized" = "Standardized to 2010",
+      "standardized to 2010" = "Standardized to 2010"
+    )
+
+    tables <- tables[
+      table[["geographic_integration"]] == integration,
+    ]
+  }
+
+  tables
+}
+
+#' Define a NHGIS time series extract
+#'
+#' @param extract If not `NULL`, extract is returned as is.
+#' @inheritParams list_nhgis_shapefiles
+#' @param output Used to set `tst_layout` value. c("tidy", "wide", "file")
+#' @keywords internal
+#' @export
+define_nhgis_ts_extract <- function(year = NULL,
+                                    tables = NULL,
+                                    geography = c("county", "state"),
+                                    extent = "us",
+                                    output = c("tidy", "wide", "file"),
+                                    shape_year = NULL,
+                                    basis = 2008,
+                                    geometry = FALSE,
+                                    ...,
+                                    time_series_tables = NULL,
+                                    description = NULL,
+                                    shapefiles = NULL,
+                                    data_format = "csv_no_header",
+                                    validate = TRUE,
+                                    api_key = Sys.getenv("IPUMS_API_KEY")) {
+  if (is.null(time_series_tables)) {
+    if (validate) {
+      tables <- rlang::arg_match(
+        tables,
+        values = nhgis_ts_tables,
+        multiple = TRUE
+      )
+    }
+
+    time_series_tables <- lapply(
+      tables,
+      \(name) {
+        year <- as.character(year)
+
+        if (validate) {
+          tbl_metadata <- ipumsr::get_metadata_nhgis(
+            time_series_table = name,
+            api_key = api_key
+          )
+
+          year <- rlang::arg_match(
+            year,
+            tbl_metadata[["years"]][["name"]],
+            multiple = TRUE
+          )
+
+          geography <- rlang::arg_match(
+            geography,
+            tbl_metadata[["geog_levels"]][["name"]],
+            multiple = TRUE
+          )
+        }
+
+        ipumsr::tst_spec(
+          name = name,
+          geog_levels = geography,
+          years = year
+        )
+      }
+    )
+  }
+
+  if (geometry) {
+    shapefiles <- shapefiles %||% list_nhgis_shapefiles(
+      geography = geography,
+      year = shape_year %||% year,
+      extent = extent,
+      basis = basis,
+      validate = validate,
+      api_key = api_key
+    )
+  }
+
+  output <- rlang::arg_match(output)
+
+  tst_layout <- switch(output,
+    "tidy" = "time_by_row_layout",
+    "wide" = "time_by_column_layout",
+    "file" = "time_by_file_layout"
+  )
+
+  ipumsr::define_extract_nhgis(
+    description = description %||% "",
+    time_series_tables = time_series_tables,
+    shapefiles = shapefiles,
+    tst_layout = tst_layout,
+    data_format = data_format,
+    ...
+  )
+}
+
+#' Get NHGIS time series data
+#'
+#' Use `define_nhgis_ts_extract()`, `ipumsr::submit_extract()`,
+#' `ipumsr::download_extract()`, and `read_nhgis_files()` to define, submit,
+#' download, and read a NHGIS time series extract.
+#'
+get_nhgis_ts_data <- function(year = NULL,
+                              tables = NULL,
+                              geography = c("county", "state"),
+                              extent = "us",
+                              output = c("tidy", "wide", "file"),
+                              basis = 2008,
+                              shape_year = NULL,
+                              geometry = FALSE,
+                              extract = NULL,
+                              data_file = NULL,
+                              shape_file = NULL,
+                              state = NULL,
+                              ...,
+                              time_series_tables = NULL,
+                              description = NULL,
+                              shapefiles = NULL,
+                              data_format = "csv_no_header",
+                              validate = TRUE,
+                              submit_extract = TRUE,
+                              download_extract = TRUE,
+                              read_download = TRUE,
+                              download_dir = getwd(),
+                              overwrite = FALSE,
+                              progress = TRUE,
+                              verbose = progress,
+                              api_key = Sys.getenv("IPUMS_API_KEY")) {
+  if (is.null(data_file)) {
+    if (is.null(extract)) {
+      extract <- define_nhgis_ts_extract(
+        year = year,
+        tables = tables,
+        geography = geography,
+        shape_year = shape_year,
+        extent = extent,
+        output = output,
+        basis = basis,
+        geometry = geometry,
+        ...,
+        time_series_tables = time_series_tables,
+        description = description,
+        shapefiles = shapefiles,
+        data_format = data_format,
+        validate = validate,
+        api_key = api_key
+      )
+    }
+
+    if (submit_extract) {
+      extract <- ipumsr::submit_extract(extract)
+    }
+
+    if (!download_extract) {
+      return(extract)
+    }
+
+    if (submit_extract) {
+      ipumsr::wait_for_extract(
+        extract = extract,
+        api_key = api_key
+      )
+    }
+
+    path <- ipumsr::download_extract(
+      extract = extract,
+      download_dir = download_dir,
+      overwrite = overwrite,
+      progress = progress,
+      api_key = api_key
+    )
+
+    if (!read_download) {
+      return(path)
+    }
+  } else {
+    path <- list(
+      "data" = data_file,
+      "shape" = shape_file
+    )
+  }
+
+  read_nhgis_files(
+    path = path,
+    verbose = verbose,
+    geometry = geometry
+  )
+}
