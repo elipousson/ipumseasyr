@@ -147,6 +147,11 @@ define_nhgis_ts_extract <- function(year = NULL,
 #' `ipumsr::download_extract()`, and `read_nhgis_files()` to define, submit,
 #' download, and read a NHGIS time series extract.
 #'
+#' @inheritParams define_nhgis_ts_extract
+#' @inheritParams ipumsr::submit_extract
+#' @inheritParams ipumsr::download_extract
+#' @inheritParams read_nhgis_files
+#' @export
 get_nhgis_ts_data <- function(year = NULL,
                               tables = NULL,
                               geography = c("county", "state"),

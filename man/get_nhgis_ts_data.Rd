@@ -33,6 +33,24 @@ get_nhgis_ts_data(
   api_key = Sys.getenv("IPUMS_API_KEY")
 )
 }
+\arguments{
+\item{output}{Used to set \code{tst_layout} value. c("tidy", "wide", "file")}
+
+\item{extract}{If not \code{NULL}, extract is returned as is.}
+
+\item{download_dir}{Path to the directory where the files should be written.
+Defaults to current working directory.}
+
+\item{overwrite}{If \code{TRUE}, overwrite any conflicting files that
+already exist in \code{download_dir}. Defaults to \code{FALSE}.}
+
+\item{progress}{If \code{TRUE}, output progress bar showing the status of the
+download request. Defaults to \code{TRUE}.}
+
+\item{api_key}{API key associated with your user account. Defaults to the
+value of the \code{IPUMS_API_KEY} environment variable. See
+\code{\link[ipumsr:set_ipums_api_key]{set_ipums_api_key()}}.}
+}
 \description{
 Use \code{define_nhgis_ts_extract()}, \code{ipumsr::submit_extract()},
 \code{ipumsr::download_extract()}, and \code{read_nhgis_files()} to define, submit,
