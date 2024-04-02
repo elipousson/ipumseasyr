@@ -55,6 +55,7 @@ get_ipumsr_extract_paths <- function(extract = NULL,
     path <- get_ipumsr_cache(
       {
         download_ipumsr_extract(
+          extract = extract,
           download_dir = download_dir,
           overwrite = overwrite,
           progress = progress,
