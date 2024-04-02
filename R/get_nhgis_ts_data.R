@@ -9,10 +9,12 @@
 #' @param integration Optional filter for geographical integration.
 list_nhgis_ts_tables <- function(...,
                                  cache = TRUE,
+                                 cache_file = "nhgis_time_series_tables.rds",
                                  refresh = FALSE,
                                  integration = NULL) {
+
   cache_path <- file.path(
-    ipumsr_cache_dir(), "nhgis_time_series_tables.csv"
+    ipumsr_cache_dir(), cache_file
   )
 
   tables <- get_ipumsr_cache(
@@ -22,12 +24,12 @@ list_nhgis_ts_tables <- function(...,
         ...
       )
     },
-    file = "nhgis_time_series_tables.rds",
+    file = cache_file,
     path = ipumsr_cache_dir(),
     refresh = refresh
   )
 
-  if (cache && !file.exists(cache_path)) {
+  if (cache && (!file.exists(cache_path) || refresh)) {
     check_installed("readr")
     readr::write_rds(tables, file = cache_path)
   }
@@ -172,14 +174,13 @@ get_nhgis_ts_data <- function(year = NULL,
                               validate = TRUE,
                               submit_extract = TRUE,
                               download_extract = TRUE,
-                              read_download = TRUE,
+                              read_files = TRUE,
                               download_dir = getwd(),
                               overwrite = FALSE,
                               progress = TRUE,
                               verbose = progress,
                               api_key = Sys.getenv("IPUMS_API_KEY")) {
-  if (is.null(data_file)) {
-    if (is.null(extract)) {
+  if (is.null(data_file) && is.null(extract)) {
       extract <- define_nhgis_ts_extract(
         year = year,
         tables = tables,
@@ -197,43 +198,23 @@ get_nhgis_ts_data <- function(year = NULL,
         validate = validate,
         api_key = api_key
       )
-    }
+  }
 
-    if (submit_extract) {
-      extract <- ipumsr::submit_extract(extract)
-    }
+  extract_paths <- get_ipumsr_extract_paths(
+    extract = extract,
+    data_file = data_file,
+    shape_file = shape_file,
+    submit_extract = submit_extract,
+    download_extract = download_extract,
+    api_key = api_key
+  )
 
-    if (!download_extract) {
-      return(extract)
-    }
-
-    if (submit_extract) {
-      ipumsr::wait_for_extract(
-        extract = extract,
-        api_key = api_key
-      )
-    }
-
-    path <- ipumsr::download_extract(
-      extract = extract,
-      download_dir = download_dir,
-      overwrite = overwrite,
-      progress = progress,
-      api_key = api_key
-    )
-
-    if (!read_download) {
-      return(path)
-    }
-  } else {
-    path <- list(
-      "data" = data_file,
-      "shape" = shape_file
-    )
+  if (!read_files) {
+    return(extract_paths)
   }
 
   read_nhgis_files(
-    path = path,
+    path = extract_paths,
     verbose = verbose,
     geometry = geometry
   )
