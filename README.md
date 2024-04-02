@@ -4,13 +4,24 @@
 # ipumseasyr
 
 <!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Project Status: WIP – Initial development is in progress, but there
+has not yet been a stable, usable release suitable for the
+public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 <!-- badges: end -->
 
-The goal of ipumseasyr is to …
+The goal of ipumseasyr is to ease access to the
+[IPUMS](https://www.ipums.org/) data (especially
+[NHGIS](https://www.nhgis.org/) data) with easy-to-use wrappers for the
+[`{ipumsr}`](https://tech.popdata.org/ipumsr/) package.
 
 ## Installation
 
-You can install the development version of ipumseasyr like so:
+You can install the development version of ipumseasyr from GitHub:
 
 ``` r
 # pak::pkg_install("elipousson/ipumseasyr")
@@ -20,8 +31,9 @@ You can install the development version of ipumseasyr like so:
 
 ``` r
 library(ipumseasyr)
-## basic example code
 ```
+
+Define an extract without submitting it:
 
 ``` r
 state_population_extract <- define_nhgis_ts_extract(
@@ -39,38 +51,57 @@ state_population_extract
 #>   Years: 1990, 2000, 2010
 ```
 
+Get an extract (using an extract from my extract history):
+
 ``` r
 nhgis_extracts <- get_nhgis_extract_history()
 
-state_population <- get_nhgis_ts_data(extract = nhgis_extracts[[1]],
-                                      down)
-#> Successfully submitted IPUMS NHGIS extract number 27
+withr::with_tempdir({
+  state_population <- get_nhgis_ts_data(
+    extract = nhgis_extracts[[1]]
+  )
+
+  dplyr::glimpse(state_population)
+})
+#> Successfully submitted IPUMS NHGIS extract number 30
 #> Checking extract status...
 #> Waiting 10 seconds...
 #> Checking extract status...
-#> IPUMS NHGIS extract 27 is ready to download.
-#>   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%
-#> Data file saved to /Users/elipousson/Projects/01_rpackages/ipumseasyr/nhgis0027_csv.zip
+#> Waiting 20 seconds...
+#> Checking extract status...
+#> IPUMS NHGIS extract 30 is ready to download.
+#>   |                                                                              |                                                                      |   0%  |                                                                              |====                                                                  |   6%  |                                                                              |==========                                                            |  15%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%
+#> Data file saved to /private/var/folders/3f/50m42dx1333_dfqb5772j6_40000gn/T/RtmpUu23eI/file450974b29832/nhgis0030_csv.zip
 #> Use of data from NHGIS is subject to conditions including that users should cite the data appropriately. Use command `ipums_conditions()` for more details.
-#> Rows: 153 Columns: 8
+#> Rows: 9419 Columns: 10
 #> ── Column specification ────────────────────────────────────────────────────────
 #> Delimiter: ","
-#> chr (3): GISJOIN, STATE, STATEA
-#> dbl (5): GEOGYEAR, DATAYEAR, CL8AA, CL8AAL, CL8AAU
+#> chr (8): GISJOIN, STATE, STATEFP, STATENH, COUNTY, COUNTYFP, COUNTYNH, NAME
+#> dbl (2): YEAR, A00AA
 #> 
 #> ℹ Use `spec()` to retrieve the full column specification for this data.
 #> ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-dplyr::glimpse(state_population)
-#> Rows: 153
-#> Columns: 9
-#> $ filename <chr> "nhgis0027_csv/nhgis0027_ts_geog2010_state.csv", "nhgis0027_c…
-#> $ GISJOIN  <chr> "G010", "G020", "G040", "G050", "G060", "G080", "G090", "G100…
-#> $ GEOGYEAR <dbl> 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2…
-#> $ DATAYEAR <dbl> 1990, 1990, 1990, 1990, 1990, 1990, 1990, 1990, 1990, 1990, 1…
-#> $ STATE    <chr> "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Co…
-#> $ STATEA   <chr> "01", "02", "04", "05", "06", "08", "09", "10", "11", "12", "…
-#> $ CL8AA    <dbl> 4040590, 550043, 3665228, 2350727, 29760021, 3294394, 3287116…
-#> $ CL8AAL   <dbl> 4040461, 550043, 3665196, 2350407, 29760021, 3294319, 3287116…
-#> $ CL8AAU   <dbl> 4040632, 550043, 3665228, 2350894, 29760021, 3294464, 3287217…
+#> Use of data from NHGIS is subject to conditions including that users should cite the data appropriately. Use command `ipums_conditions()` for more details.
+#> 
+#> Rows: 153 Columns: 7
+#> ── Column specification ────────────────────────────────────────────────────────
+#> Delimiter: ","
+#> chr (5): GISJOIN, STATE, STATEFP, STATENH, NAME
+#> dbl (2): YEAR, A00AA
+#> 
+#> ℹ Use `spec()` to retrieve the full column specification for this data.
+#> ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+#> Rows: 9,572
+#> Columns: 11
+#> $ filename <chr> "nhgis0030_csv/nhgis0030_ts_nominal_county.csv", "nhgis0030_c…
+#> $ GISJOIN  <chr> "G0100010", "G0100030", "G0100050", "G0100070", "G0100090", "…
+#> $ YEAR     <dbl> 1980, 1980, 1980, 1980, 1980, 1980, 1980, 1980, 1980, 1980, 1…
+#> $ STATE    <chr> "Alabama", "Alabama", "Alabama", "Alabama", "Alabama", "Alaba…
+#> $ STATEFP  <chr> "01", "01", "01", "01", "01", "01", "01", "01", "01", "01", "…
+#> $ STATENH  <chr> "010", "010", "010", "010", "010", "010", "010", "010", "010"…
+#> $ COUNTY   <chr> "Autauga County", "Baldwin County", "Barbour County", "Bibb C…
+#> $ COUNTYFP <chr> "001", "003", "005", "007", "009", "011", "013", "015", "017"…
+#> $ COUNTYNH <chr> "0010", "0030", "0050", "0070", "0090", "0110", "0130", "0150…
+#> $ NAME     <chr> "AUTAUGA COUNTY", "BALDWIN COUNTY", "BARBOUR COUNTY", "BIBB C…
+#> $ A00AA    <dbl> 32259, 78556, 24756, 15723, 36459, 10596, 21680, 119761, 3919…
 ```

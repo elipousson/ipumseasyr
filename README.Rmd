@@ -16,13 +16,16 @@ knitr::opts_chunk$set(
 # ipumseasyr
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 <!-- badges: end -->
 
-The goal of ipumseasyr is to ...
+The goal of ipumseasyr is to ease access to the [IPUMS](https://www.ipums.org/) data (especially [NHGIS](https://www.nhgis.org/) data) with easy-to-use wrappers for the [`{ipumsr}`](https://tech.popdata.org/ipumsr/) package.
 
 ## Installation
 
-You can install the development version of ipumseasyr like so:
+You can install the development version of ipumseasyr from GitHub:
 
 ``` r
 # pak::pkg_install("elipousson/ipumseasyr")
@@ -32,9 +35,9 @@ You can install the development version of ipumseasyr like so:
 
 ```{r example}
 library(ipumseasyr)
-## basic example code
 ```
 
+Define an extract without submitting it:
 
 ```{r define_nhgis_ts_extract}
 state_population_extract <- define_nhgis_ts_extract(
@@ -46,12 +49,16 @@ state_population_extract <- define_nhgis_ts_extract(
 state_population_extract
 ```
 
+Get an extract (using an extract from my extract history):
 
 ```{r get_nhgis_ts_data}
 nhgis_extracts <- get_nhgis_extract_history()
 
-state_population <- get_nhgis_ts_data(extract = nhgis_extracts[[1]],
-                                      down)
+withr::with_tempdir({
+  state_population <- get_nhgis_ts_data(
+    extract = nhgis_extracts[[1]]
+  )
 
-dplyr::glimpse(state_population)
+  dplyr::glimpse(state_population)
+})
 ```
