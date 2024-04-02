@@ -25,7 +25,7 @@ get_nhgis_ts_data(
   validate = TRUE,
   submit_extract = TRUE,
   download_extract = TRUE,
-  read_download = TRUE,
+  read_files = TRUE,
   download_dir = getwd(),
   overwrite = FALSE,
   progress = TRUE,
@@ -38,6 +38,12 @@ get_nhgis_ts_data(
 
 \item{extract}{If not \code{NULL}, extract is returned as is.}
 
+\item{data_file}{Path to a .zip archive containing an NHGIS extract or
+a single file from an NHGIS extract.}
+
+\item{shape_file}{Path to a single .shp file or a .zip archive
+containing at least one .shp file. See Details section.}
+
 \item{download_dir}{Path to the directory where the files should be written.
 Defaults to current working directory.}
 
@@ -46,6 +52,13 @@ already exist in \code{download_dir}. Defaults to \code{FALSE}.}
 
 \item{progress}{If \code{TRUE}, output progress bar showing the status of the
 download request. Defaults to \code{TRUE}.}
+
+\item{verbose}{Logical controlling whether to display output when loading
+data. If \code{TRUE}, displays IPUMS conditions, a progress bar, and
+column types. Otherwise, all are suppressed.
+
+Will be overridden by \code{readr.show_progress} and \code{readr.show_col_types}
+options, if they are set.}
 
 \item{api_key}{API key associated with your user account. Defaults to the
 value of the \code{IPUMS_API_KEY} environment variable. See

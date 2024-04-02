@@ -15,8 +15,33 @@ read_nhgis_files(
   ...
 )
 }
+\arguments{
+\item{path}{Optional if \code{data_file} is supplied. A named list with a "data"
+and "shape" element containing the paths to the \code{data_file} and
+\code{shape_file} arguments of used by \code{\link[ipumsr:read_nhgis]{ipumsr::read_nhgis()}} and
+\code{\link[ipumsr:read_ipums_sf]{ipumsr::read_ipums_sf()}}.}
+
+\item{data_file}{Path to a .zip archive containing an NHGIS extract or
+a single file from an NHGIS extract.}
+
+\item{data_file_select, shape_file_select}{Passed to \code{file_select} parameter
+of \code{\link[=read_nhgis_data]{read_nhgis_data()}} or \code{\link[=read_ipums_geometry]{read_ipums_geometry()}}.}
+
+\item{shape_file}{Path to a single .shp file or a .zip archive
+containing at least one .shp file. See Details section.}
+
+\item{verbose}{Logical controlling whether to display output when loading
+data. If \code{TRUE}, displays IPUMS conditions, a progress bar, and
+column types. Otherwise, all are suppressed.
+
+Will be overridden by \code{readr.show_progress} and \code{readr.show_col_types}
+options, if they are set.}
+}
+\value{
+A named list with "data" and "shape" elements or a combined sf data
+frame.
+}
 \description{
-@inheritParams ipumsr::read_nhgis
-@export
-@importFrom dplyr left_join join_by
+Read NHGIS data and geometry to return a named list or a combined \code{sf}
+object.
 }

@@ -4,7 +4,13 @@
 \alias{list_nhgis_ts_tables}
 \title{List NHGIS time series tables}
 \usage{
-list_nhgis_ts_tables(..., cache = TRUE, refresh = FALSE, integration = NULL)
+list_nhgis_ts_tables(
+  ...,
+  cache = TRUE,
+  cache_file = "nhgis_time_series_tables.rds",
+  refresh = FALSE,
+  integration = NULL
+)
 }
 \arguments{
 \item{...}{Additional parameters passed to \code{ipumsr::get_metadata_nhgis()}}

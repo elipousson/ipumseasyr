@@ -12,9 +12,23 @@ read_nhgis_data(
   ...
 )
 }
+\arguments{
+\item{data_file}{Path to a .zip archive containing an NHGIS extract or
+a single file from an NHGIS extract.}
+
+\item{file_select}{If \code{data_file} is a .zip archive that
+contains multiple files, an expression identifying the file to load.
+Accepts a character vector specifying the
+file name, a \link[ipumsr:selection_language]{tidyselect selection}, or an index
+position. This must uniquely identify a file.}
+
+\item{verbose}{Logical controlling whether to display output when loading
+data. If \code{TRUE}, displays IPUMS conditions, a progress bar, and
+column types. Otherwise, all are suppressed.
+
+Will be overridden by \code{readr.show_progress} and \code{readr.show_col_types}
+options, if they are set.}
+}
 \description{
-@inheritParams ipumsr::read_nhgis
-@export
-@importFrom vctrs vec_rbind
-@importFrom ipumsr read_nhgis
+Read NHGIS data using \code{ipumsr::read_nhgis}
 }

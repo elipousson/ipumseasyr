@@ -15,8 +15,41 @@ read_ipums_geometry(
   verbose = FALSE
 )
 }
+\arguments{
+\item{shape_file}{Path to a single .shp file or a .zip archive
+containing at least one .shp file. See Details section.}
+
+\item{file_select}{If \code{shape_file} is a .zip archive that
+contains multiple files, an expression identifying the files to load.
+Accepts a character string specifying the
+file name, a \link[ipumsr:selection_language]{tidyselect selection}, or index
+position. If multiple files are selected, \code{bind_multiple} must be
+equal to \code{TRUE}.}
+
+\item{vars}{Names of variables to include in the output. Accepts a
+character vector of names or a \link[ipumsr:selection_language]{tidyselect selection}.
+If \code{NULL}, includes all variables in the file.}
+
+\item{encoding}{Encoding to use when reading the shape file. If \code{NULL},
+defaults to \code{"latin1"} unless the file includes a .cpg metadata file
+with encoding information. The default value should generally be
+appropriate.}
+
+\item{bind_multiple}{If \code{TRUE} and \code{shape_file} contains multiple .shp files,
+row-bind the files into a single \code{sf} object. Useful when \code{shape_file}
+contains multiple files that represent the same geographic units for
+different extents (e.g. block-level data for multiple states).}
+
+\item{add_layer_var}{If \code{TRUE}, add a variable to the output data indicating
+the file that each row originates from. Defaults to \code{FALSE} unless
+\code{bind_multiple = TRUE} and multiple files exist in \code{shape_file}.
+
+The column name will always be prefixed with \code{"layer"}, but will be
+adjusted to avoid name conflicts if another column named \code{"layer"} already
+exists in the data.}
+
+\item{verbose}{If \code{TRUE} report additional progress information on load.}
+}
 \description{
-@inheritParams ipumsr::read_ipums_sf
-@export
-@importFrom ipumsr read_ipums_sf
+Read IPUMS geometry using \code{ipumsr::read_ipums_sf}
 }

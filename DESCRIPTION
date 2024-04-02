@@ -14,6 +14,7 @@ Depends:
 Imports: 
     dplyr,
     ipumsr,
+    rappdirs,
     rlang,
     stringr,
     vctrs
@@ -25,4 +26,4 @@ Suggests:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
