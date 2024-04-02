@@ -9,6 +9,9 @@ Maintainer: Eli Pousson <eli.pousson@gmail.com>
 Description: A package with helper functions extending the {ipumsr}
     package for accessing NHGIS and other IMPUMS data sources.
 License: MIT + file LICENSE
+URL: https://github.com/elipousson/ipumseasyr,
+    https://elipousson.github.io/ipumseasyr/
+BugReports: https://github.com/elipousson/ipumseasyr/issues
 Depends: 
     R (>= 2.10)
 Imports: 

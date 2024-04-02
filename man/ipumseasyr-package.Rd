@@ -11,7 +11,9 @@ A package with helper functions extending the {ipumsr} package for accessing NHG
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://github.com/elipousson/ipumseasyr}
   \item \url{https://elipousson.github.io/ipumseasyr/}
+  \item Report bugs at \url{https://github.com/elipousson/ipumseasyr/issues}
 }
 
 }
