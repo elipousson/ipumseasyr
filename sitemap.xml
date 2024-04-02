@@ -25,13 +25,13 @@
     <loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_extract_paths.html</loc>
   </url>
   <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/get_nhgis_extract_history.html</loc>
-  </url>
-  <url>
     <loc>https://elipousson.github.io/ipumseasyr/reference/get_nhgis_ts_data.html</loc>
   </url>
   <url>
     <loc>https://elipousson.github.io/ipumseasyr/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://elipousson.github.io/ipumseasyr/reference/ipums_extract_history.html</loc>
   </url>
   <url>
     <loc>https://elipousson.github.io/ipumseasyr/reference/ipumseasyr-package.html</loc>
