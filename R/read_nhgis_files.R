@@ -16,9 +16,9 @@ list_file_select <- function(file = NULL,
 
 #' Read IPUMS geometry using `ipumsr::read_ipums_sf`
 #'
-#'  @inheritParams ipumsr::read_ipums_sf
-#'  @export
-#'  @importFrom ipumsr read_ipums_sf
+#' @inheritParams ipumsr::read_ipums_sf
+#' @export
+#' @importFrom ipumsr read_ipums_sf
 read_ipums_geometry <- function(shape_file = NULL,
                                 path = NULL,
                                 file_select = NULL,
@@ -51,10 +51,10 @@ read_ipums_geometry <- function(shape_file = NULL,
 
 #' Read NHGIS data using `ipumsr::read_nhgis`
 #'
-#'  @inheritParams ipumsr::read_nhgis
-#'  @export
-#'  @importFrom vctrs vec_rbind
-#'  @importFrom ipumsr read_nhgis
+#' @inheritParams ipumsr::read_nhgis
+#' @export
+#' @importFrom vctrs vec_rbind
+#' @importFrom ipumsr read_nhgis
 read_nhgis_data <- function(data_file = NULL,
                             path = NULL,
                             file_select = NULL,
@@ -91,9 +91,21 @@ read_nhgis_data <- function(data_file = NULL,
 
 #' Read NHGIS data and geometry
 #'
-#'  @inheritParams ipumsr::read_nhgis
-#'  @export
-#'  @importFrom dplyr left_join join_by
+#' Read NHGIS data and geometry to return a named list or a combined `sf`
+#' object.
+#'
+#' @param path Optional if `data_file` is supplied. A named list with a "data"
+#'   and "shape" element containing the paths to the `data_file` and
+#'   `shape_file` arguments of used by [ipumsr::read_nhgis()] and
+#'   [ipumsr::read_ipums_sf()].
+#' @inheritParams read_nhgis_data
+#' @inheritParams read_ipums_geometry
+#' @param data_file_select,shape_file_select Passed to `file_select` parameter
+#'   of [read_nhgis_data()] or [read_ipums_geometry()].
+#' @returns A named list with "data" and "shape" elements or a combined sf data
+#'   frame.
+#' @export
+#' @importFrom dplyr left_join join_by
 read_nhgis_files <- function(path = NULL,
                              data_file = NULL,
                              data_file_select = NULL,
