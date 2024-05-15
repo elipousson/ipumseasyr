@@ -22,8 +22,11 @@ Imports:
     stringr,
     vctrs
 Suggests: 
+    labelled,
     readr,
     sf,
+    tibble,
+    tidyr,
     tigris,
     withr
 Encoding: UTF-8
