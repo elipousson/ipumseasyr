@@ -277,6 +277,11 @@ join_nhgis_percent <- function(data,
     c(denom_variable_col, denom_value_col, denom_title_col)
   )
 
+  if (!all(names(data) %in% c(variable_col, denom_variable_col))) {
+    cli::cli_warn("Missing required columns")
+    return(data)
+  }
+
   denominator_data <- data |>
     dplyr::filter(
       .data[[variable_col]] %in% data[[denom_variable_col]]
