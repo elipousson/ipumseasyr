@@ -58,11 +58,26 @@ read_ipums_geometry <- function(shape_file = NULL,
 read_nhgis_data <- function(data_file = NULL,
                             path = NULL,
                             file_select = NULL,
+                            multiple = TRUE,
                             verbose = FALSE,
-                            ...) {
+                            ...,
+                            format = c("tidy", "wide"),
+                            variable_col = "variable",
+                            value_col = "value",
+                            column_title_col = "column_title",
+                            denominator_prefix = "denominator_",
+                            variable_starts_with = c(
+                              "A", "B", "D0", "AV",
+                              "A4", "BS", "BUQ", "B0J",
+                              "B7", "CV", "CM", "CL"
+                            ),
+                            perc_prefix = "perc_",
+                            digits = 2) {
   if (is.null(data_file) && has_name(path, "data")) {
     data_file <- path[["data"]]
   }
+
+  format <- arg_match(format, c("tidy", "wide"))
 
   stopifnot(
     file.exists(data_file)
@@ -74,12 +89,33 @@ read_nhgis_data <- function(data_file = NULL,
   nhgis_data <- lapply(
     rlang::set_names(file_select, file_select),
     \(file) {
-      ipumsr::read_nhgis(
+      data <- ipumsr::read_nhgis(
         data_file = data_file,
         file_select = file,
         verbose = verbose,
         ...
       )
+
+      if (format == "tidy") {
+        data <- data |>
+          pivot_nhgis_data(
+            variable_col = variable_col,
+            value_col = value_col,
+            column_title_col = column_title_col,
+            denominator_prefix = denominator_prefix,
+            variable_starts_with = variable_starts_with
+          ) |>
+          join_nhgis_percent(
+            variable_col = variable_col,
+            value_col = value_col,
+            column_title_col = column_title_col,
+            denominator_prefix = denominator_prefix,
+            perc_prefix = perc_prefix,
+            digits = digits
+          )
+      }
+
+      data
     }
   )
 
@@ -87,6 +123,58 @@ read_nhgis_data <- function(data_file = NULL,
     !!!nhgis_data,
     .names_to = "filename"
   )
+}
+
+#' @rdname read_nhgis_data
+#' @keywords internal
+#' @export
+read_nhgis_ext <- function(data_file,
+                           file_select = NULL,
+                           verbose = FALSE,
+                           var_attrs = c("val_labels", "var_label", "var_desc"),
+                           ...,
+                           format = "tidy",
+                           variable_col = "variable",
+                           value_col = "value",
+                           column_title_col = "column_title",
+                           denominator_prefix = "denominator_",
+                           variable_starts_with = c(
+                             "A", "B", "D0", "AV",
+                             "A4", "BS", "BUQ", "B0J",
+                             "B7", "CV", "CM", "CL"
+                           ),
+                           perc_prefix = "perc_",
+                           digits = 2) {
+  format <- arg_match(format, c("tidy", "wide"))
+
+  data <- ipumsr::read_nhgis(
+    data_file = data_file,
+    file_select = file,
+    verbose = verbose,
+    var_attrs = var_attrs,
+    ...
+  )
+
+  if (format == "wide") {
+    return(data)
+  }
+
+  data |>
+    pivot_nhgis_data(
+      variable_col = variable_col,
+      value_col = value_col,
+      column_title_col = column_title_col,
+      denominator_prefix = denominator_prefix,
+      variable_starts_with = variable_starts_with
+    ) |>
+    join_nhgis_percent(
+      variable_col = variable_col,
+      value_col = value_col,
+      column_title_col = column_title_col,
+      denominator_prefix = denominator_prefix,
+      perc_prefix = perc_prefix,
+      digits = digits
+    )
 }
 
 #' Read NHGIS data and geometry
@@ -146,6 +234,7 @@ read_nhgis_files <- function(path = NULL,
 
   check_installed("sf")
 
+  # FIXME: Should this be replaced with a ipums_shape_join_* function?
   nhgis_data <- dplyr::left_join(
     nhgis_data,
     nhgis_shape,

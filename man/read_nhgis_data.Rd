@@ -2,14 +2,42 @@
 % Please edit documentation in R/read_nhgis_files.R
 \name{read_nhgis_data}
 \alias{read_nhgis_data}
+\alias{read_nhgis_ext}
 \title{Read NHGIS data using \code{ipumsr::read_nhgis}}
 \usage{
 read_nhgis_data(
   data_file = NULL,
   path = NULL,
   file_select = NULL,
+  multiple = TRUE,
   verbose = FALSE,
-  ...
+  ...,
+  format = c("tidy", "wide"),
+  variable_col = "variable",
+  value_col = "value",
+  column_title_col = "column_title",
+  denominator_prefix = "denominator_",
+  variable_starts_with = c("A", "B", "D0", "AV", "A4", "BS", "BUQ", "B0J", "B7", "CV",
+    "CM", "CL"),
+  perc_prefix = "perc_",
+  digits = 2
+)
+
+read_nhgis_ext(
+  data_file,
+  file_select = NULL,
+  verbose = FALSE,
+  var_attrs = c("val_labels", "var_label", "var_desc"),
+  ...,
+  format = "tidy",
+  variable_col = "variable",
+  value_col = "value",
+  column_title_col = "column_title",
+  denominator_prefix = "denominator_",
+  variable_starts_with = c("A", "B", "D0", "AV", "A4", "BS", "BUQ", "B0J", "B7", "CV",
+    "CM", "CL"),
+  perc_prefix = "perc_",
+  digits = 2
 )
 }
 \arguments{
@@ -28,7 +56,13 @@ column types. Otherwise, all are suppressed.
 
 Will be overridden by \code{readr.show_progress} and \code{readr.show_col_types}
 options, if they are set.}
+
+\item{var_attrs}{Variable attributes to add from the codebook (.txt) file
+included in the extract. Defaults to all available attributes.
+
+See \code{\link[ipumsr:set_ipums_var_attributes]{set_ipums_var_attributes()}} for more details.}
 }
 \description{
 Read NHGIS data using \code{ipumsr::read_nhgis}
 }
+\keyword{internal}

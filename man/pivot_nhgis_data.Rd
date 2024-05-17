@@ -9,7 +9,7 @@ pivot_nhgis_data(
   data,
   variable_col = "variable",
   value_col = "value",
-  label_col = "label",
+  column_title_col = "column_title",
   denominator_prefix = "denominator_",
   variable_starts_with = c("A", "B", "D0", "AV", "A4", "BS", "BUQ", "B0J", "B7", "CV",
     "CM", "CL")
@@ -19,9 +19,10 @@ join_nhgis_percent(
   data,
   variable_col = "variable",
   value_col = "value",
-  label_col = "label",
+  column_title_col = "column_title",
   denominator_prefix = "denominator_",
-  perc_prefix = "perc_"
+  perc_prefix = "perc_",
+  digits = 2
 )
 }
 \arguments{
@@ -29,9 +30,9 @@ join_nhgis_percent(
 
 \item{value_col}{Value column name}
 
-\item{label_col}{Label column name}
-
 \item{perc_prefix}{Prefix string to use for calculated percent value.}
+
+\item{label_col}{Label column name}
 }
 \description{
 \code{\link[=pivot_nhgis_data]{pivot_nhgis_data()}} switches NHGIS data from a wide to long format and
