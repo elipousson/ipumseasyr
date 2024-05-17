@@ -22,6 +22,7 @@ Imports:
     stringr,
     vctrs
 Suggests: 
+    ggplot2,
     labelled,
     readr,
     sf,
