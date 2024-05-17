@@ -66,11 +66,6 @@ read_nhgis_data <- function(data_file = NULL,
                             value_col = "value",
                             column_title_col = "column_title",
                             denominator_prefix = "denominator_",
-                            variable_starts_with = c(
-                              "A", "B", "D0", "AV",
-                              "A4", "BS", "BUQ", "B0J",
-                              "B7", "CV", "CM", "CL"
-                            ),
                             perc_prefix = "perc_",
                             digits = 2) {
   if (is.null(data_file) && has_name(path, "data")) {
@@ -102,8 +97,7 @@ read_nhgis_data <- function(data_file = NULL,
             variable_col = variable_col,
             value_col = value_col,
             column_title_col = column_title_col,
-            denominator_prefix = denominator_prefix,
-            variable_starts_with = variable_starts_with
+            denominator_prefix = denominator_prefix
           ) |>
           join_nhgis_percent(
             variable_col = variable_col,
@@ -132,17 +126,13 @@ read_nhgis_ext <- function(data_file,
                            file_select = NULL,
                            verbose = FALSE,
                            var_attrs = c("val_labels", "var_label", "var_desc"),
+                           show_col_types = FALSE,
                            ...,
                            format = "tidy",
                            variable_col = "variable",
                            value_col = "value",
                            column_title_col = "column_title",
                            denominator_prefix = "denominator_",
-                           variable_starts_with = c(
-                             "A", "B", "D0", "AV",
-                             "A4", "BS", "BUQ", "B0J",
-                             "B7", "CV", "CM", "CL"
-                           ),
                            perc_prefix = "perc_",
                            digits = 2) {
   format <- arg_match(format, c("tidy", "wide"))
@@ -152,6 +142,7 @@ read_nhgis_ext <- function(data_file,
     file_select = file,
     verbose = verbose,
     var_attrs = var_attrs,
+    show_col_types = show_col_types,
     ...
   )
 
@@ -175,8 +166,7 @@ read_nhgis_ext <- function(data_file,
       variable_col = variable_col,
       value_col = value_col,
       column_title_col = column_title_col,
-      denominator_prefix = denominator_prefix,
-      variable_starts_with = variable_starts_with
+      denominator_prefix = denominator_prefix
     ) |>
     join_nhgis_percent(
       variable_col = variable_col,

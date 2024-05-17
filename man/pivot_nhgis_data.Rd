@@ -11,9 +11,7 @@ pivot_nhgis_data(
   value_col = "value",
   column_title_col = "column_title",
   denominator_prefix = "denominator_",
-  cols_vary = "slowest",
-  variable_starts_with = c("A", "B", "D0", "AV", "A4", "BS", "BUQ", "B0J", "B7", "CV",
-    "CM", "CL")
+  cols_vary = "slowest"
 )
 
 join_nhgis_percent(
@@ -23,18 +21,30 @@ join_nhgis_percent(
   column_title_col = "column_title",
   denominator_prefix = "denominator_",
   perc_prefix = "perc_",
+  join_cols = c("GISJOIN", "YEAR"),
   digits = 2
 )
 }
 \arguments{
+\item{data}{A data frame to pivot.}
+
 \item{variable_col}{Variable column name}
 
 \item{value_col}{Value column name}
 
 \item{column_title_col}{Column title column name (to be created from column labels)}
 
-\item{variable_starts_with}{Character vector to match to variables to pivot.
-Modify this if the function is pivoting non-NHGIS variables in error.}
+\item{cols_vary}{When pivoting \code{cols} into longer format, how should the
+output rows be arranged relative to their original row number?
+\itemize{
+\item \code{"fastest"}, the default, keeps individual rows from \code{cols} close
+together in the output. This often produces intuitively ordered output
+when you have at least one key column from \code{data} that is not involved in
+the pivoting process.
+\item \code{"slowest"} keeps individual columns from \code{cols} close together in the
+output. This often produces intuitively ordered output when you utilize
+all of the columns from \code{data} in the pivoting process.
+}}
 
 \item{perc_prefix}{Prefix string to use for calculated percent value.}
 
@@ -51,5 +61,8 @@ calculating a percent share value. This feature is supported for many but not
 all of the most popular NHGIS time series variables. Both function uses a
 similar set of conventions as the \code{{getACS}} package to support ease of code
 reuse between NHGIS and American Community Survey (ACS) data.
+
+At presnet, all numeric columns that do not appear to be an identifier are
+pivoted.
 }
 \keyword{internal}

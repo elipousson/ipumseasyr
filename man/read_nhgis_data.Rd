@@ -17,8 +17,6 @@ read_nhgis_data(
   value_col = "value",
   column_title_col = "column_title",
   denominator_prefix = "denominator_",
-  variable_starts_with = c("A", "B", "D0", "AV", "A4", "BS", "BUQ", "B0J", "B7", "CV",
-    "CM", "CL"),
   perc_prefix = "perc_",
   digits = 2
 )
@@ -28,14 +26,13 @@ read_nhgis_ext(
   file_select = NULL,
   verbose = FALSE,
   var_attrs = c("val_labels", "var_label", "var_desc"),
+  show_col_types = FALSE,
   ...,
   format = "tidy",
   variable_col = "variable",
   value_col = "value",
   column_title_col = "column_title",
   denominator_prefix = "denominator_",
-  variable_starts_with = c("A", "B", "D0", "AV", "A4", "BS", "BUQ", "B0J", "B7", "CV",
-    "CM", "CL"),
   perc_prefix = "perc_",
   digits = 2
 )

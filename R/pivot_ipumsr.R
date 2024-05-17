@@ -12,25 +12,21 @@
 #' similar set of conventions as the `{getACS}` package to support ease of code
 #' reuse between NHGIS and American Community Survey (ACS) data.
 #'
+#' At presnet, all numeric columns that do not appear to be an identifier are
+#' pivoted.
+#'
 #' @param variable_col Variable column name
 #' @param value_col Value column name
 #' @param label_col Label column name
 #' @param column_title_col Column title column name (to be created from column labels)
-#' @param variable_starts_with Character vector to match to variables to pivot.
-#'   Modify this if the function is pivoting non-NHGIS variables in error.
+#' @inheritParams tidyr::pivot_longer
 #' @export
 pivot_nhgis_data <- function(data,
                              variable_col = "variable",
                              value_col = "value",
                              column_title_col = "column_title",
                              denominator_prefix = "denominator_",
-                             cols_vary = "slowest",
-                             variable_starts_with = c(
-                               "A", "B", "D0",
-                               "AV", "A4",
-                               "BS", "BUQ", "B0J", "B7",
-                               "CV", "CM", "CL"
-                             )) {
+                             cols_vary = "slowest") {
   check_installed(c("tidyr", "labelled", "tibble"))
 
   nhgis_var_labels <- data |>
@@ -52,14 +48,17 @@ pivot_nhgis_data <- function(data,
   year_cols <- c("GEOGYEAR", "DATAYEAR", "YEAR")
 
   keep_cols <- c(
-    "GISJOIN", "AREA", "NAME", "AREANAME",
+    "GISJOIN", "AREA", "NAME", "AREANAME", "NHGISCODE",
     year_cols,
     "STATE", "STATEA", "STATEFP", "STATENH", "STATEICP",
     "COUNTY", "COUNTYA", "COUNTYFP", "COUNTYNH", "COUNTYICP",
-    "PRETRACTA", "TRACTA", "POSTTRCTA", "geometry"
+    "MSA", "PLACE", "PLACEDC", "PLACDESC", "URBAN", "60MCD", "60PLACESC",
+    "CMSA", "CENCNTY", "CBD", "SEA", "UATYPE", "STUSAB", "DIVIS", "REG",
+    "PRETRACTA", "TRACTA", "POSTTRCTA", "GNOTES", "geometry"
   )
 
-  wide_variable_cols <- names(data)[!(names(data) %in% keep_cols)]
+  match_cols <- !(names(data) %in% keep_cols) &
+    lapply(data, class) == "numeric"
 
   data <- data |>
     dplyr::mutate(
@@ -69,7 +68,7 @@ pivot_nhgis_data <- function(data,
       )
     ) |>
     tidyr::pivot_longer(
-      cols = dplyr::all_of(wide_variable_cols),
+      cols = dplyr::all_of(names(data)[match_cols]),
       cols_vary = cols_vary,
       names_to = variable_col,
       values_to = value_col
@@ -144,33 +143,42 @@ pivot_nhgis_data <- function(data,
     return(data)
   }
 
+  nhgis_moe_cols <- c(
+    paste0(value_col, "_lower"),
+    paste0(value_col, "_upper"),
+    "moe"
+  )
+
   data |>
     join_moe_cols(
       moe_pattern = "^Lower bound",
       moe_variable_remove = "L$",
-      moe_col = paste0(value_col, "_lower"),
+      moe_col = nhgis_moe_cols[[1]],
       variable_col = variable_col,
       column_title_col = column_title_col,
       value_col = value_col,
-      denominator_prefix = denominator_prefix
+      denominator_prefix = denominator_prefix,
+      drop_cols = nhgis_moe_cols[2:3]
     ) |>
     join_moe_cols(
       moe_pattern = "^Upper bound",
       moe_variable_remove = "U$",
-      moe_col = paste0(value_col, "_upper"),
+      moe_col = nhgis_moe_cols[[2]],
       variable_col = variable_col,
       column_title_col = column_title_col,
       value_col = value_col,
-      denominator_prefix = denominator_prefix
+      denominator_prefix = denominator_prefix,
+      drop_cols = nhgis_moe_cols[c(1, 3)]
     ) |>
     join_moe_cols(
       moe_pattern = "^Margin of error",
       moe_variable_remove = "M$",
-      moe_col = "moe",
+      moe_col = nhgis_moe_cols[[3]],
       variable_col = variable_col,
       column_title_col = column_title_col,
       value_col = value_col,
-      denominator_prefix = denominator_prefix
+      denominator_prefix = denominator_prefix,
+      drop_cols = nhgis_moe_cols[1:2]
     )
 }
 
@@ -183,7 +191,8 @@ join_moe_cols <- function(
     column_title_col = "column_title",
     value_col = "value",
     moe_col = "value_lower",
-    denominator_prefix = "denominator_") {
+    denominator_prefix = "denominator_",
+    drop_cols = NULL) {
   moe_pattern_match <- stringr::str_detect(
     data[[column_title_col]],
     moe_pattern
@@ -208,6 +217,11 @@ join_moe_cols <- function(
       !dplyr::any_of(column_title_col),
       !dplyr::starts_with(denominator_prefix)
     )
+
+  if (!is.null(drop_cols)) {
+    moe_join_data <- moe_join_data |>
+      dplyr::select(!dplyr::any_of(drop_cols))
+  }
 
   if (inherits(moe_join_data, "sf")) {
     check_installed("sf")
@@ -238,6 +252,7 @@ join_nhgis_percent <- function(data,
                                column_title_col = "column_title",
                                denominator_prefix = "denominator_",
                                perc_prefix = "perc_",
+                               join_cols = c("GISJOIN", "YEAR"),
                                digits = 2) {
   denom_variable_col <- paste0(denominator_prefix, variable_col)
 
@@ -245,24 +260,26 @@ join_nhgis_percent <- function(data,
 
   denom_title_col <- paste0(denominator_prefix, column_title_col)
 
+  denom_names <- rlang::set_names(
+    c(variable_col, value_col, column_title_col),
+    c(denom_variable_col, denom_value_col, denom_title_col)
+  )
+
   denominator_data <- data |>
     dplyr::filter(
       .data[[variable_col]] %in% data[[denom_variable_col]]
     ) |>
     dplyr::select(!all_of(denom_variable_col)) |>
     dplyr::rename(
-      dplyr::all_of(
-        rlang::set_names(
-          c(variable_col, value_col, column_title_col),
-          c(denom_variable_col, denom_value_col, denom_title_col)
-        )
-      )
-    )
+      dplyr::all_of(denom_names)
+    ) |>
+    dplyr::select(dplyr::any_of(c(join_cols, names(denom_names))))
 
   data |>
     dplyr::left_join(
       denominator_data
     ) |>
+    suppressMessages() |>
     dplyr::mutate(
       "{perc_prefix}{value_col}" := dplyr::case_when(
         is.na(.data[[denom_variable_col]]) ~ NA_real_,
