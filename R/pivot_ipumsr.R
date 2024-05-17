@@ -58,7 +58,12 @@ pivot_nhgis_data <- function(data,
   )
 
   match_cols <- !(names(data) %in% keep_cols) &
-    lapply(data, class) == "numeric"
+    lapply(data, class) %in% c(
+      "numeric",
+      "logical" # NA values
+    )
+
+  match_variable_cols <- names(data)[match_cols]
 
   data <- data |>
     dplyr::mutate(
@@ -66,9 +71,16 @@ pivot_nhgis_data <- function(data,
         dplyr::any_of(year_cols),
         as.character
       )
-    ) |>
+    )
+
+  if (length(match_variable_cols) == 0) {
+    cli::cli_warn("No pivot columns identified.")
+    return(data)
+  }
+
+  data |>
     tidyr::pivot_longer(
-      cols = dplyr::all_of(names(data)[match_cols]),
+      cols = dplyr::all_of(match_variable_cols),
       cols_vary = cols_vary,
       names_to = variable_col,
       values_to = value_col
