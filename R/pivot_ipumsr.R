@@ -1,13 +1,23 @@
-#' Pivot NHGIS data longer to assign denominator variables
+#' Pivot NHGIS data longer to assign denominator variables and join percent values
 #'
-#' [pivot_nhgis_data()] switches NHGIS data from a wide to long format and
-#' creates a denominator column based on a preset crosswalk between variables
-#' and corresponding denominators.
+#' @description
+#' [pivot_nhgis_data()] uses [tidyr::pivot_longer()] switches NHGIS data from a
+#' wide to long format and creates a denominator column based on a preset
+#' crosswalk between variables and corresponding denominators. The input data
+#' must have variable column labels present.
+#'
+#' [join_nhgis_percent()] uses the denominator values added in pivoting to
+#' calculating a percent share value. This feature is supported for many but not
+#' all of the most popular NHGIS time series variables. Both function uses a
+#' similar set of conventions as the `{getACS}` package to support ease of code
+#' reuse between NHGIS and American Community Survey (ACS) data.
 #'
 #' @param variable_col Variable column name
 #' @param value_col Value column name
 #' @param label_col Label column name
-#' @keywords internal
+#' @param column_title_col Column title column name (to be created from column labels)
+#' @param variable_starts_with Character vector to match to variables to pivot.
+#'   Modify this if the function is pivoting non-NHGIS variables in error.
 #' @export
 pivot_nhgis_data <- function(data,
                              variable_col = "variable",

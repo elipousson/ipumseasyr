@@ -3,7 +3,7 @@
 \name{pivot_nhgis_data}
 \alias{pivot_nhgis_data}
 \alias{join_nhgis_percent}
-\title{Pivot NHGIS data longer to assign denominator variables}
+\title{Pivot NHGIS data longer to assign denominator variables and join percent values}
 \usage{
 pivot_nhgis_data(
   data,
@@ -31,13 +31,25 @@ join_nhgis_percent(
 
 \item{value_col}{Value column name}
 
+\item{column_title_col}{Column title column name (to be created from column labels)}
+
+\item{variable_starts_with}{Character vector to match to variables to pivot.
+Modify this if the function is pivoting non-NHGIS variables in error.}
+
 \item{perc_prefix}{Prefix string to use for calculated percent value.}
 
 \item{label_col}{Label column name}
 }
 \description{
-\code{\link[=pivot_nhgis_data]{pivot_nhgis_data()}} switches NHGIS data from a wide to long format and
-creates a denominator column based on a preset crosswalk between variables
-and corresponding denominators.
+\code{\link[=pivot_nhgis_data]{pivot_nhgis_data()}} uses \code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}} switches NHGIS data from a
+wide to long format and creates a denominator column based on a preset
+crosswalk between variables and corresponding denominators. The input data
+must have variable column labels present.
+
+\code{\link[=join_nhgis_percent]{join_nhgis_percent()}} uses the denominator values added in pivoting to
+calculating a percent share value. This feature is supported for many but not
+all of the most popular NHGIS time series variables. Both function uses a
+similar set of conventions as the \code{{getACS}} package to support ease of code
+reuse between NHGIS and American Community Survey (ACS) data.
 }
 \keyword{internal}
