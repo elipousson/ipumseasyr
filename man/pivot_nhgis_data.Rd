@@ -11,6 +11,7 @@ pivot_nhgis_data(
   value_col = "value",
   column_title_col = "column_title",
   denominator_prefix = "denominator_",
+  cols_vary = "slowest",
   variable_starts_with = c("A", "B", "D0", "AV", "A4", "BS", "BUQ", "B0J", "B7", "CV",
     "CM", "CL")
 )

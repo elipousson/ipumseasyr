@@ -14,6 +14,7 @@ pivot_nhgis_data <- function(data,
                              value_col = "value",
                              column_title_col = "column_title",
                              denominator_prefix = "denominator_",
+                             cols_vary = "slowest",
                              variable_starts_with = c(
                                "A", "B", "D0",
                                "AV", "A4",
@@ -45,8 +46,10 @@ pivot_nhgis_data <- function(data,
     year_cols,
     "STATE", "STATEA", "STATEFP", "STATENH", "STATEICP",
     "COUNTY", "COUNTYA", "COUNTYFP", "COUNTYNH", "COUNTYICP",
-    "PRETRACTA", "TRACTA", "POSTTRCTA"
+    "PRETRACTA", "TRACTA", "POSTTRCTA", "geometry"
   )
+
+  wide_variable_cols <- names(data)[!(names(data) %in% keep_cols)]
 
   data <- data |>
     dplyr::mutate(
@@ -56,10 +59,8 @@ pivot_nhgis_data <- function(data,
       )
     ) |>
     tidyr::pivot_longer(
-      cols = c(
-        dplyr::starts_with(variable_starts_with),
-        !dplyr::any_of(keep_cols)
-      ),
+      cols = dplyr::all_of(wide_variable_cols),
+      cols_vary = cols_vary,
       names_to = variable_col,
       values_to = value_col
     ) |>
@@ -251,10 +252,11 @@ join_nhgis_percent <- function(data,
       denominator_data
     ) |>
     dplyr::mutate(
-      "{perc_prefix}{value_col}" := dplyr::if_else(
-        !is.na(.data[[denom_variable_col]]) & !is.na(.data[[value_col]]) & .data[[denom_value_col]] > 0,
-        round(.data[[value_col]] / .data[[denom_value_col]], digits = digits),
-        NA_real_
+      "{perc_prefix}{value_col}" := dplyr::case_when(
+        is.na(.data[[denom_variable_col]]) ~ NA_character_,
+        is.na(.data[[value_col]]) ~ NA_character_,
+        .data[[denom_value_col]] == 0 ~ NA_character_,
+        .default = round(.data[[value_col]] / .data[[denom_value_col]], digits = digits)
       ),
       .after = dplyr::starts_with(value_col)
     )
