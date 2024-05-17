@@ -44,7 +44,8 @@ pivot_nhgis_data <- function(data,
     "GISJOIN", "AREA", "NAME", "AREANAME",
     year_cols,
     "STATE", "STATEA", "STATEFP", "STATENH", "STATEICP",
-    "COUNTY", "COUNTYA", "COUNTYFP", "COUNTYNH", "COUNTYICP"
+    "COUNTY", "COUNTYA", "COUNTYFP", "COUNTYNH", "COUNTYICP",
+    "PRETRACTA", "TRACTA", "POSTTRCTA"
   )
 
   data <- data |>
