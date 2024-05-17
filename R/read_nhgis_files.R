@@ -155,6 +155,17 @@ read_nhgis_ext <- function(data_file,
     ...
   )
 
+  if (has_name(data, "DATAYEAR") & !has_name(data, "YEAR")) {
+    cli::cli_alert_info(
+      "Using {.col DATAYEAR} as the {.col YEAR} column value"
+    )
+
+    data <- data |>
+      dplyr::mutate(
+        YEAR = DATAYEAR
+      )
+  }
+
   if (format == "wide") {
     return(data)
   }

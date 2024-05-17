@@ -106,8 +106,10 @@ pivot_nhgis_data <- function(data,
         .data[[variable_col]] %in% c("CM9AA", "CM9AB") ~ "CM7AA",
 
         # Occupied housing units
-        .data[[variable_col]] %in% c("CV5AA", "CV5AB", "CV5AC",
-                                     "CV5AD", "CV5AE", "CV5AF") ~ "A43AA",
+        .data[[variable_col]] %in% c(
+          "CV5AA", "CV5AB", "CV5AC",
+          "CV5AD", "CV5AE", "CV5AF"
+        ) ~ "A43AA",
         # Housing units
         # .data[[variable_col]] %in% c("CM9AA", "CM9AB") ~ "CM7AA",
 
@@ -253,9 +255,9 @@ join_nhgis_percent <- function(data,
     ) |>
     dplyr::mutate(
       "{perc_prefix}{value_col}" := dplyr::case_when(
-        is.na(.data[[denom_variable_col]]) ~ NA_character_,
-        is.na(.data[[value_col]]) ~ NA_character_,
-        .data[[denom_value_col]] == 0 ~ NA_character_,
+        is.na(.data[[denom_variable_col]]) ~ NA_real_,
+        is.na(.data[[value_col]]) ~ NA_real_,
+        .data[[denom_value_col]] == 0 ~ NA_real_,
         .default = round(.data[[value_col]] / .data[[denom_value_col]], digits = digits)
       ),
       .after = dplyr::starts_with(value_col)
