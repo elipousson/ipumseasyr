@@ -29,22 +29,6 @@ pivot_nhgis_data <- function(data,
                              cols_vary = "slowest") {
   check_installed(c("tidyr", "labelled", "tibble"))
 
-  nhgis_var_labels <- data |>
-    labelled::get_variable_labels()
-
-  stopifnot(
-    !is_empty(nhgis_var_labels)
-  )
-
-  nhgis_variables <- nhgis_var_labels |>
-    tibble::enframe(
-      name = variable_col,
-      value = column_title_col
-    ) |>
-    dplyr::mutate(
-      "{column_title_col}" := as.character(.data[[column_title_col]])
-    )
-
   year_cols <- c("GEOGYEAR", "DATAYEAR", "YEAR")
 
   keep_cols <- c(
@@ -58,7 +42,9 @@ pivot_nhgis_data <- function(data,
   )
 
   match_cols <- !(names(data) %in% keep_cols) &
-    lapply(data, class) %in% c(
+    as.character(lapply(data, \(x){
+      class(x)[1]
+    })) %in% c(
       "numeric",
       "logical" # NA values
     )
@@ -78,17 +64,12 @@ pivot_nhgis_data <- function(data,
     return(data)
   }
 
-  data |>
+  data <- data |>
     tidyr::pivot_longer(
       cols = dplyr::all_of(match_variable_cols),
       cols_vary = cols_vary,
       names_to = variable_col,
       values_to = value_col
-    ) |>
-    # Join labels from dictionary
-    dplyr::left_join(
-      nhgis_variables,
-      by = variable_col
     ) |>
     dplyr::mutate(
       "{denominator_prefix}{variable_col}" := dplyr::case_when(
@@ -147,11 +128,34 @@ pivot_nhgis_data <- function(data,
       .after = dplyr::all_of(variable_col)
     )
 
-  moe_join <- any(c(
-    stringr::str_detect(data[[column_title_col]], "^(Lower bound|Upper bound|Margin of error)")
-  ))
+  nhgis_var_labels <- labelled::get_variable_labels(data)
 
-  if (!moe_join) {
+  if (is_empty(nhgis_var_labels)) {
+    cli::cli_warn("Assigning variable titles requires labelled columns")
+    return(data)
+  }
+
+  nhgis_variables <- nhgis_var_labels |>
+    tibble::enframe(
+      name = variable_col,
+      value = column_title_col
+    ) |>
+    dplyr::mutate(
+      "{column_title_col}" := as.character(.data[[column_title_col]])
+    )
+
+  # Join labels from dictionary
+  data <- data |>
+    dplyr::left_join(
+      nhgis_variables,
+      by = variable_col
+    )
+
+  moe_len <- nchar(data[[variable_col]]) > 5 & !is.na(data[[variable_col]])
+
+  moe_vars <- moe_len & stringr::str_detect(data[[variable_col]], "(M|U|L)$")
+
+  if (!any(moe_vars)) {
     return(data)
   }
 
@@ -161,9 +165,10 @@ pivot_nhgis_data <- function(data,
     "moe"
   )
 
-  data |>
+  data <- data |>
     join_moe_cols(
-      moe_pattern = "^Lower bound",
+      moe_i = moe_len & stringr::str_detect(data[[variable_col]], "L$"),
+      # moe_pattern = "^Lower bound",
       moe_variable_remove = "L$",
       moe_col = nhgis_moe_cols[[1]],
       variable_col = variable_col,
@@ -171,9 +176,12 @@ pivot_nhgis_data <- function(data,
       value_col = value_col,
       denominator_prefix = denominator_prefix,
       drop_cols = nhgis_moe_cols[2:3]
-    ) |>
+    )
+
+  data <- data |>
     join_moe_cols(
-      moe_pattern = "^Upper bound",
+      moe_i = moe_len & stringr::str_detect(data[[variable_col]], "U$"),
+      # moe_pattern = "^Upper bound",
       moe_variable_remove = "U$",
       moe_col = nhgis_moe_cols[[2]],
       variable_col = variable_col,
@@ -181,9 +189,12 @@ pivot_nhgis_data <- function(data,
       value_col = value_col,
       denominator_prefix = denominator_prefix,
       drop_cols = nhgis_moe_cols[c(1, 3)]
-    ) |>
+    )
+
+  data <- data |>
     join_moe_cols(
-      moe_pattern = "^Margin of error",
+      moe_i = moe_len & stringr::str_detect(data[[variable_col]], "M$"),
+      # moe_pattern = "^Margin of error",
       moe_variable_remove = "M$",
       moe_col = nhgis_moe_cols[[3]],
       variable_col = variable_col,
@@ -192,12 +203,15 @@ pivot_nhgis_data <- function(data,
       denominator_prefix = denominator_prefix,
       drop_cols = nhgis_moe_cols[1:2]
     )
+
+  data
 }
 
 #' @noRd
 join_moe_cols <- function(
     data,
-    moe_pattern = "^Lower bound",
+    # moe_pattern = "^Lower bound",
+    moe_i = NULL,
     moe_variable_remove = "L$",
     variable_col = "variable",
     column_title_col = "column_title",
@@ -205,17 +219,17 @@ join_moe_cols <- function(
     moe_col = "value_lower",
     denominator_prefix = "denominator_",
     drop_cols = NULL) {
-  moe_pattern_match <- stringr::str_detect(
-    data[[column_title_col]],
-    moe_pattern
-  )
+  # moe_pattern_match <- stringr::str_detect(
+  #   data[[column_title_col]],
+  #   moe_pattern
+  # )
 
-  if (!any(moe_pattern_match)) {
+  if (is.null(moe_i) || !any(moe_i)) {
     return(data)
   }
 
   moe_join_data <- data |>
-    dplyr::filter(moe_pattern_match) |>
+    dplyr::filter(moe_i) |>
     dplyr::rename(
       dplyr::any_of(set_names(value_col, moe_col))
     ) |>
@@ -241,7 +255,7 @@ join_moe_cols <- function(
   }
 
   data |>
-    dplyr::filter(!moe_pattern_match) |>
+    dplyr::filter(!moe_i) |>
     dplyr::left_join(
       moe_join_data,
       na_matches = "never"
@@ -268,19 +282,22 @@ join_nhgis_percent <- function(data,
                                digits = 2) {
   denom_variable_col <- paste0(denominator_prefix, variable_col)
 
+  if (!all(has_name(data, c(variable_col, denom_variable_col)))) {
+    cli::cli_warn(
+      "Missing required columns: {c(variable_col, denom_variable_col)}"
+    )
+
+    return(data)
+  }
+
   denom_value_col <- paste0(denominator_prefix, value_col)
 
   denom_title_col <- paste0(denominator_prefix, column_title_col)
 
-  denom_names <- rlang::set_names(
+  denom_names <- set_names(
     c(variable_col, value_col, column_title_col),
     c(denom_variable_col, denom_value_col, denom_title_col)
   )
-
-  if (!all(names(data) %in% c(variable_col, denom_variable_col))) {
-    cli::cli_warn("Missing required columns")
-    return(data)
-  }
 
   denominator_data <- data |>
     dplyr::filter(
