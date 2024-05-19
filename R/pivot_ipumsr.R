@@ -64,6 +64,8 @@ pivot_nhgis_data <- function(data,
     return(data)
   }
 
+  nhgis_var_labels <- labelled::get_variable_labels(data)
+
   data <- data |>
     tidyr::pivot_longer(
       cols = dplyr::all_of(match_variable_cols),
@@ -128,8 +130,6 @@ pivot_nhgis_data <- function(data,
       .after = dplyr::all_of(variable_col)
     )
 
-  nhgis_var_labels <- labelled::get_variable_labels(data)
-
   if (is_empty(nhgis_var_labels)) {
     cli::cli_warn("Assigning variable titles requires labelled columns")
     return(data)
@@ -167,8 +167,8 @@ pivot_nhgis_data <- function(data,
 
   data <- data |>
     join_moe_cols(
-      moe_i = moe_len & stringr::str_detect(data[[variable_col]], "L$"),
-      # moe_pattern = "^Lower bound",
+      # moe_i = moe_len & stringr::str_detect(data[[variable_col]], "L$"),
+      moe_pattern = "^Lower bound",
       moe_variable_remove = "L$",
       moe_col = nhgis_moe_cols[[1]],
       variable_col = variable_col,
@@ -176,12 +176,10 @@ pivot_nhgis_data <- function(data,
       value_col = value_col,
       denominator_prefix = denominator_prefix,
       drop_cols = nhgis_moe_cols[2:3]
-    )
-
-  data <- data |>
+    ) |>
     join_moe_cols(
-      moe_i = moe_len & stringr::str_detect(data[[variable_col]], "U$"),
-      # moe_pattern = "^Upper bound",
+      # moe_i = moe_len & stringr::str_detect(data[[variable_col]], "U$"),
+      moe_pattern = "^Upper bound",
       moe_variable_remove = "U$",
       moe_col = nhgis_moe_cols[[2]],
       variable_col = variable_col,
@@ -189,12 +187,10 @@ pivot_nhgis_data <- function(data,
       value_col = value_col,
       denominator_prefix = denominator_prefix,
       drop_cols = nhgis_moe_cols[c(1, 3)]
-    )
-
-  data <- data |>
+    ) |>
     join_moe_cols(
-      moe_i = moe_len & stringr::str_detect(data[[variable_col]], "M$"),
-      # moe_pattern = "^Margin of error",
+      # moe_i = moe_len & stringr::str_detect(data[[variable_col]], "M$"),
+      moe_pattern = "^Margin of error",
       moe_variable_remove = "M$",
       moe_col = nhgis_moe_cols[[3]],
       variable_col = variable_col,
@@ -210,8 +206,8 @@ pivot_nhgis_data <- function(data,
 #' @noRd
 join_moe_cols <- function(
     data,
-    # moe_pattern = "^Lower bound",
-    moe_i = NULL,
+    moe_pattern = "^Lower bound",
+    # moe_i = NULL,
     moe_variable_remove = "L$",
     variable_col = "variable",
     column_title_col = "column_title",
@@ -219,17 +215,22 @@ join_moe_cols <- function(
     moe_col = "value_lower",
     denominator_prefix = "denominator_",
     drop_cols = NULL) {
-  # moe_pattern_match <- stringr::str_detect(
-  #   data[[column_title_col]],
-  #   moe_pattern
-  # )
+  if (!has_name(data, column_title_col)) {
+    return(data)
+  }
 
-  if (is.null(moe_i) || !any(moe_i)) {
+  moe_pattern_match <- stringr::str_detect(
+    data[[column_title_col]],
+    moe_pattern
+  )
+
+  # if (is.null(moe_i) || !any(moe_i)) {
+  if (!any(moe_pattern_match)) {
     return(data)
   }
 
   moe_join_data <- data |>
-    dplyr::filter(moe_i) |>
+    dplyr::filter(moe_pattern_match) |>
     dplyr::rename(
       dplyr::any_of(set_names(value_col, moe_col))
     ) |>
@@ -255,7 +256,7 @@ join_moe_cols <- function(
   }
 
   data |>
-    dplyr::filter(!moe_i) |>
+    dplyr::filter(!moe_pattern_match) |>
     dplyr::left_join(
       moe_join_data,
       na_matches = "never"
