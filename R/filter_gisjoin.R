@@ -15,7 +15,7 @@ filter_gisjoin <- function(data,
 
     if (!is.null(state) && is.null(county)) {
       state <- tigris:::validate_state(state = state, multiple = TRUE)
-      values <- paste0("G", state_fips, "0")
+      values <- paste0("G", state, "0")
     } else {
       state <- tigris:::validate_state(state = state)
       county <- tigris:::validate_state(state = state, county = county, multiple = TRUE)
