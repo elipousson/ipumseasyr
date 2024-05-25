@@ -116,6 +116,13 @@ pivot_nhgis_data <- function(data,
           "B14AA", "B14AB"
         ) ~ denominators[["persons"]], # "AV0AA",
 
+        # Persons
+        # Persons: Not Hispanic or Latino and Persons: Hispanic or Latino
+        .data[[variable_col]] %in% c(
+          "CV4AA", "CV4AB", "CV4AC", "CV4AD", "CV4AE",
+          "CV4AF", "CV4AG", "CV4AH", "CV4AI", "CV4AJ"
+        ) ~ denominators[["persons"]],
+
         # Negro
         .data[[variable_col]] %in% c("BYA003", "A8L005", "A8L006") ~ "BYA003",
 
