@@ -1,4 +1,5 @@
-#' Pivot NHGIS data longer to assign denominator variables and join percent values
+#' Pivot NHGIS data longer to assign denominator variables and join percent
+#' values
 #'
 #' @description
 #' [pivot_nhgis_data()] uses [tidyr::pivot_longer()] switches NHGIS data from a
@@ -18,15 +19,23 @@
 #' @param variable_col Variable column name
 #' @param value_col Value column name
 #' @param label_col Label column name
-#' @param column_title_col Column title column name (to be created from column labels)
+#' @param column_title_col Column title column name (to be created from column
+#'   labels)
 #' @inheritParams tidyr::pivot_longer
+#' @param denominators Named list of denominator values.
 #' @export
 pivot_nhgis_data <- function(data,
                              variable_col = "variable",
                              value_col = "value",
                              column_title_col = "column_title",
                              denominator_prefix = "denominator_",
-                             cols_vary = "slowest") {
+                             cols_vary = "slowest",
+                             denominators = list(
+                               persons = "A00AA",
+                               families = "A68AA",
+                               housing_units = "A41AA",
+                               occupied_units = "A43AA"
+                             )) {
   check_installed(c("tidyr", "labelled", "tibble"))
 
   year_cols <- c("GEOGYEAR", "DATAYEAR", "YEAR")
@@ -78,19 +87,23 @@ pivot_nhgis_data <- function(data,
         # Totals
         .data[[variable_col]] %in% c(
           "A41AA", "A68AA", "AV0AA", "A00AA", "AR5AA",
-          "CM7AA", "CL8AA"
+          "CM7AA", "CL8AA", as.character(denominators)
         ) ~ .data[[variable_col]],
 
         # Total units
-        .data[[variable_col]] %in% c("A43AA", "A43AB") ~ "A41AA",
+        .data[[variable_col]] %in% c(
+          "A43AA", "A43AB"
+          ) ~ denominators[["housing_units"]], # ~ "A41AA",
 
         # Occupied units
-        .data[[variable_col]] %in% c("B37AA", "B37AB") ~ "A43AA",
+        .data[[variable_col]] %in% c(
+          "B37AA", "B37AB"
+          ) ~ denominators[["occupied_units"]], # ~ "A43AA",
 
         # Families
         .data[[variable_col]] %in% c(
           "A88AA", "A88AB", "A88AC", "A88AD", "A88AE"
-        ) ~ "A68AA",
+        ) ~ denominators[["families"]], # "A68AA",
 
         # Persons
         .data[[variable_col]] %in% c(
@@ -101,7 +114,7 @@ pivot_nhgis_data <- function(data,
           "B57AK", "B57AL", "B57AM", "B57AN", "B57AO",
           "B57AP", "B57AQ", "B57AR", "D08AA", "D08AB",
           "B14AA", "B14AB"
-        ) ~ "AV0AA",
+        ) ~ denominators[["persons"]], # "AV0AA",
 
         # Negro
         .data[[variable_col]] %in% c("BYA003", "A8L005", "A8L006") ~ "BYA003",
@@ -113,7 +126,7 @@ pivot_nhgis_data <- function(data,
         .data[[variable_col]] %in% c(
           "CV5AA", "CV5AB", "CV5AC",
           "CV5AD", "CV5AE", "CV5AF"
-        ) ~ "A43AA",
+        ) ~ denominators[["occupied_units"]], #"A43AA",
         # Housing units
         # .data[[variable_col]] %in% c("CM9AA", "CM9AB") ~ "CM7AA",
 

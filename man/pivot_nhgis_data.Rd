@@ -3,7 +3,8 @@
 \name{pivot_nhgis_data}
 \alias{pivot_nhgis_data}
 \alias{join_nhgis_percent}
-\title{Pivot NHGIS data longer to assign denominator variables and join percent values}
+\title{Pivot NHGIS data longer to assign denominator variables and join percent
+values}
 \usage{
 pivot_nhgis_data(
   data,
@@ -11,7 +12,9 @@ pivot_nhgis_data(
   value_col = "value",
   column_title_col = "column_title",
   denominator_prefix = "denominator_",
-  cols_vary = "slowest"
+  cols_vary = "slowest",
+  denominators = list(persons = "A00AA", families = "A68AA", housing_units = "A41AA",
+    occupied_units = "A43AA")
 )
 
 join_nhgis_percent(
@@ -32,7 +35,8 @@ join_nhgis_percent(
 
 \item{value_col}{Value column name}
 
-\item{column_title_col}{Column title column name (to be created from column labels)}
+\item{column_title_col}{Column title column name (to be created from column
+labels)}
 
 \item{cols_vary}{When pivoting \code{cols} into longer format, how should the
 output rows be arranged relative to their original row number?
@@ -45,6 +49,8 @@ the pivoting process.
 output. This often produces intuitively ordered output when you utilize
 all of the columns from \code{data} in the pivoting process.
 }}
+
+\item{denominators}{Named list of denominator values.}
 
 \item{perc_prefix}{Prefix string to use for calculated percent value.}
 
