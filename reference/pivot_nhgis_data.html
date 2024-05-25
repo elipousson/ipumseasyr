@@ -84,7 +84,9 @@ pivoted.</p>
 <span>  value_col <span class="op">=</span> <span class="st">"value"</span>,</span>
 <span>  column_title_col <span class="op">=</span> <span class="st">"column_title"</span>,</span>
 <span>  denominator_prefix <span class="op">=</span> <span class="st">"denominator_"</span>,</span>
-<span>  cols_vary <span class="op">=</span> <span class="st">"slowest"</span></span>
+<span>  cols_vary <span class="op">=</span> <span class="st">"slowest"</span>,</span>
+<span>  denominators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>persons <span class="op">=</span> <span class="st">"A00AA"</span>, families <span class="op">=</span> <span class="st">"A68AA"</span>, housing_units <span class="op">=</span> <span class="st">"A41AA"</span>,</span>
+<span>    occupied_units <span class="op">=</span> <span class="st">"A43AA"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">join_nhgis_percent</span><span class="op">(</span></span>
@@ -114,7 +116,8 @@ pivoted.</p>
 
 
 <dt>column_title_col</dt>
-<dd><p>Column title column name (to be created from column labels)</p></dd>
+<dd><p>Column title column name (to be created from column
+labels)</p></dd>
 
 
 <dt>cols_vary</dt>
@@ -127,6 +130,10 @@ the pivoting process.</p></li>
 output. This often produces intuitively ordered output when you utilize
 all of the columns from <code>data</code> in the pivoting process.</p></li>
 </ul></dd>
+
+
+<dt>denominators</dt>
+<dd><p>Named list of denominator values.</p></dd>
 
 
 <dt>perc_prefix</dt>
