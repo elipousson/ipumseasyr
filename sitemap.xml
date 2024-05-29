@@ -22,7 +22,10 @@
     <loc>https://elipousson.github.io/ipumseasyr/reference/download_ipumsr_extract.html</loc>
   </url>
   <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/filter_gisjoin.html</loc>
+    <loc>https://elipousson.github.io/ipumseasyr/reference/filter_nhgisjoin.html</loc>
+  </url>
+  <url>
+    <loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_cache.html</loc>
   </url>
   <url>
     <loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_extract_paths.html</loc>
