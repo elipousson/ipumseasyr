@@ -84,4 +84,7 @@ reuse between NHGIS and American Community Survey (ACS) data.
 At present, all numeric columns that do not appear to be an identifier
 are pivoted.
 }
+\seealso{
+\code{\link[=join_nhgis_percent_change]{join_nhgis_percent_change()}}
+}
 \keyword{internal}
