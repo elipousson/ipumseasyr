@@ -16,6 +16,10 @@ download_ipumsr_extract <- function(extract = NULL,
                                     progress = TRUE,
                                     ...,
                                     api_key = Sys.getenv("IPUMS_API_KEY")) {
+  if (!is_interactive()) {
+    cli::cli_warn("{.fn download_ipumsr_extract} is only recommended for interactive use.")
+  }
+
   ipumsr::wait_for_extract(
     extract = extract,
     api_key = api_key,
@@ -53,6 +57,11 @@ get_ipumsr_extract_paths <- function(extract = NULL,
                                      progress = TRUE,
                                      refresh = FALSE,
                                      api_key = Sys.getenv("IPUMS_API_KEY")) {
+  if (!submit_extract && !download_extract) {
+    # FIXME: Add warning for this case
+    return(extract)
+  }
+
   if (!is.null(extract)) {
     # Check cache here
     if (submit_extract) {

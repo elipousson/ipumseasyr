@@ -193,10 +193,6 @@ get_nhgis_ts_data <- function(year = NULL,
                               progress = TRUE,
                               verbose = progress,
                               api_key = Sys.getenv("IPUMS_API_KEY")) {
-  if (!is_interactive()) {
-    cli::cli_warn("{.fn get_nhgis_ts_data} is only recommended for interactive use.")
-  }
-
   if (is.null(data_file) && is.null(extract)) {
     extract <- define_nhgis_ts_extract(
       year = year,
@@ -226,7 +222,8 @@ get_nhgis_ts_data <- function(year = NULL,
     api_key = api_key
   )
 
-  if (!read_files) {
+  if (!read_files || !is_bare_list(extract_paths)) {
+    # FIXME: Add warning if extract_paths is not a bare list
     return(extract_paths)
   }
 
