@@ -6,8 +6,8 @@ Authors@R:
     person("Eli", "Pousson", , "eli.pousson@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-8280-1706"))
 Maintainer: Eli Pousson <eli.pousson@gmail.com>
-Description: A package with helper functions extending the {ipumsr}
-    package for accessing NHGIS and other IMPUMS data sources.
+Description: A package with helper functions extending the ipumsr package
+    for accessing NHGIS and other IPUMS data sources.
 License: MIT + file LICENSE
 URL: https://github.com/elipousson/ipumseasyr,
     https://elipousson.github.io/ipumseasyr/
@@ -31,9 +31,9 @@ Suggests:
     tidyr,
     tigris (>= 2.1.1),
     withr
+Remotes: 
+    elipousson/tigris
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
-Remotes:  
-    elipousson/tigris
+RoxygenNote: 7.3.1.9000
