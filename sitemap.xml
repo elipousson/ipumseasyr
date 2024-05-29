@@ -25,6 +25,9 @@
     <loc>https://elipousson.github.io/ipumseasyr/reference/filter_nhgisjoin.html</loc>
   </url>
   <url>
+    <loc>https://elipousson.github.io/ipumseasyr/reference/fmt_nhgis_places.html</loc>
+  </url>
+  <url>
     <loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_cache.html</loc>
   </url>
   <url>
@@ -44,6 +47,9 @@
   </url>
   <url>
     <loc>https://elipousson.github.io/ipumseasyr/reference/ipumsr_cache_dir.html</loc>
+  </url>
+  <url>
+    <loc>https://elipousson.github.io/ipumseasyr/reference/join_nhgis_percent_change.html</loc>
   </url>
   <url>
     <loc>https://elipousson.github.io/ipumseasyr/reference/labs_nhgis.html</loc>
@@ -71,5 +77,8 @@
   </url>
   <url>
     <loc>https://elipousson.github.io/ipumseasyr/reference/read_nhgis_files.html</loc>
+  </url>
+  <url>
+    <loc>https://elipousson.github.io/ipumseasyr/reference/usa_states.html</loc>
   </url>
 </urlset>
