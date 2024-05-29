@@ -23,6 +23,7 @@
 #' @inheritParams tidyr::pivot_longer
 #' @param denominators Named list of denominator values.
 #' @inheritParams cli::cli_abort
+#' @seealso [join_nhgis_percent_change()]
 #' @export
 pivot_nhgis_data <- function(data,
                              variable_col = "variable",
@@ -349,14 +350,80 @@ join_nhgis_percent <- function(data,
     dplyr::select(dplyr::any_of(c(join_cols, names(denom_names))))
 
   data |>
-    # TODO: Add an explicit join by that works in all cases
-    dplyr::left_join(
-      denominator_data
-    ) |>
-    suppressMessages() |>
     fmt_perc_value_col(
+      # TODO: Add an explicit join by that works in all cases
+      denominator_data = denominator_data,
       value_col = value_col,
       denominator_prefix = denominator_prefix,
+      perc_prefix = perc_prefix,
+      digits = digits
+    )
+}
+
+#' Join a percent change in variable relative to a reference year
+#'
+#' [join_nhgis_percent_change()] joins a percent change column relative to a
+#' reference year. Optionally join a rank from the reference year using
+#' [dplyr::ntile()].
+#'
+#' @param reference_year Reference year to use when calculating a percent change
+#'   column.
+#' @param rank,rank_n Passed to `x` and `n` arguments of [dplyr::ntile()] to
+#'   join a reference rank value.
+#' @export
+#' @importFrom dplyr ntile
+join_nhgis_percent_change <- function(
+    data,
+    reference_year = NULL,
+    value_col = "value",
+    reference_prefix = "reference_",
+    gisjoin_col = "NHGISCODE",
+    variable_col = "variable",
+    year_col = "YEAR",
+    rank_col = "rank",
+    rank = NULL,
+    rank_n = NULL,
+    ...,
+    perc_prefix = "perc_change_",
+    digits = 2) {
+  reference_year <- reference_year %||% min(as.integer(data[[year_col]]))
+
+  stopifnot(
+    has_length(reference_year, 1)
+  )
+
+  reference_data <- data |>
+    dplyr::filter(
+      .data[[year_col]] == reference_year
+    ) |>
+    dplyr::mutate(
+      "{reference_prefix}{value_col}" := .data[[value_col]],
+      "{reference_prefix}{year_col}" := .data[[year_col]]
+    ) |>
+    dplyr::select(
+      all_of(
+        c(
+          paste0(reference_prefix, c(year_col, value_col)),
+          gisjoin_col, variable_col
+        )
+      )
+    )
+
+  if (!is.null(rank_n)) {
+    reference_data <- reference_data |>
+      dplyr::mutate(
+        "{reference_prefix}{rank_col}" := dplyr::ntile(
+          rank %||% dplyr::row_number(),
+          n = rank_n
+        )
+      )
+  }
+
+  data |>
+    fmt_perc_value_col(
+      value_col = value_col,
+      denominator_prefix = reference_prefix,
+      denominator_data = reference_data,
       perc_prefix = perc_prefix,
       digits = digits
     )
@@ -369,13 +436,31 @@ join_nhgis_percent <- function(data,
 fmt_perc_value_col <- function(data,
                                value_col = "value",
                                denominator_prefix = "denominator_",
+                               denominator_data = NULL,
+                               ...,
                                perc_prefix = "perc_",
                                digits = 2) {
   denom_value_col <- paste0(denominator_prefix, value_col)
 
+  if (!is.null(denominator_data)) {
+    data <- data |>
+      dplyr::left_join(
+        y = denominator_data,
+        ...
+      ) |>
+      suppressMessages()
+  }
+
+  perc_value_col <- paste0(perc_prefix, value_col)
+
+  stopifnot(
+    !has_name(data, perc_value_col),
+    all(has_name(data, c(value_col, denom_value_col)))
+  )
+
   data |>
     dplyr::mutate(
-      "{perc_prefix}{value_col}" := dplyr::case_when(
+      "{perc_value_col}" := dplyr::case_when(
         is.na(.data[[denom_value_col]]) ~ NA_real_,
         is.na(.data[[value_col]]) ~ NA_real_,
         .data[[denom_value_col]] == 0 ~ NA_real_,
