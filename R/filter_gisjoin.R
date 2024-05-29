@@ -6,10 +6,10 @@
 #'   are ignored if this is supplied.
 #' @keywords internal
 filter_nhgisjoin <- function(data,
-                           state = NULL,
-                           county = NULL,
-                           values = NULL,
-                           gisjoin_col = "NHGISJOIN") {
+                             state = NULL,
+                             county = NULL,
+                             values = NULL,
+                             gisjoin_col = "NHGISJOIN") {
   if (is.null(values)) {
     check_installed("tigris")
 

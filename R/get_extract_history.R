@@ -60,4 +60,3 @@ get_ipumsi_extract_history <- function(...) {
     }
   )
 }
-

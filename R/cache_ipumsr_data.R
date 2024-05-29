@@ -1,4 +1,7 @@
 #' Get path to `{ipumseasyr}` package cache directory
+#'
+#' @keywords internal
+#' @export
 #' @importFrom rappdirs user_cache_dir
 ipumsr_cache_dir <- function(pkg = "ipumseasyr") {
   cache_dir <- rappdirs::user_cache_dir(pkg)
@@ -9,7 +12,15 @@ ipumsr_cache_dir <- function(pkg = "ipumseasyr") {
 }
 
 #' Get cached object from `{ipumseasyr}` package cache
-#' @noRd
+#'
+#' [get_ipumsr_cache()] reads a cached IPUMS data file using [readr::read_rds()].
+#'
+#' @param file File name of the cached RDS file.
+#' @param refresh If `FALSE`, do not read a file from cache. If `TRUE`, read a
+#'   file from cache if it exists at the supplied path.
+#' @param path Path to package cache directory. Defaults to [ipumsr_cache_dir()]
+#' @keywords internal
+#' @export
 get_ipumsr_cache <- function(code,
                              refresh = FALSE,
                              file = NULL,

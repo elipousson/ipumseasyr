@@ -13,16 +13,16 @@
 #' similar set of conventions as the `{getACS}` package to support ease of code
 #' reuse between NHGIS and American Community Survey (ACS) data.
 #'
-#' At presnet, all numeric columns that do not appear to be an identifier are
-#' pivoted.
+#' At present, all numeric columns that do not appear to be an identifier
+#' are pivoted.
 #'
 #' @param variable_col Variable column name
 #' @param value_col Value column name
-#' @param label_col Label column name
 #' @param column_title_col Column title column name (to be created from column
 #'   labels)
 #' @inheritParams tidyr::pivot_longer
 #' @param denominators Named list of denominator values.
+#' @inheritParams cli::cli_abort
 #' @export
 pivot_nhgis_data <- function(data,
                              variable_col = "variable",
@@ -35,10 +35,31 @@ pivot_nhgis_data <- function(data,
                                families = "A68AA",
                                housing_units = "A41AA",
                                occupied_units = "A43AA"
-                             )) {
+                             ),
+                             call = caller_env()) {
   check_installed(c("tidyr", "labelled", "tibble"))
 
   year_cols <- c("GEOGYEAR", "DATAYEAR", "YEAR")
+
+  if (!any(has_name(data, year_cols))) {
+    cli_warn(
+      c("{.arg data} may be using a wide format with years in separate columns
+        which is not recommended for this function.",
+        "i" = 'Did you forget to set {.code tst_layout = "time_by_row_layout"}
+      when defining the extract?'
+      )
+    )
+  }
+
+  if (has_name(data, variable_col)) {
+    cli_abort(
+      c("{.arg data} already contains the {.arg variable_col} {.str {variable_col}}.",
+        "i" = "If you used {.fn get_nhgis_ts_data} or {.fn read_nhgis_data} to
+      access this data, the data may already be converted into a long format."
+      ),
+      call = call
+    )
+  }
 
   keep_cols <- c(
     "GISJOIN", "AREA", "NAME", "AREANAME", "NHGISCODE",
@@ -93,12 +114,12 @@ pivot_nhgis_data <- function(data,
         # Total units
         .data[[variable_col]] %in% c(
           "A43AA", "A43AB"
-          ) ~ denominators[["housing_units"]], # ~ "A41AA",
+        ) ~ denominators[["housing_units"]], # ~ "A41AA",
 
         # Occupied units
         .data[[variable_col]] %in% c(
           "B37AA", "B37AB"
-          ) ~ denominators[["occupied_units"]], # ~ "A43AA",
+        ) ~ denominators[["occupied_units"]], # ~ "A43AA",
 
         # Families
         .data[[variable_col]] %in% c(
@@ -133,18 +154,18 @@ pivot_nhgis_data <- function(data,
         .data[[variable_col]] %in% c(
           "CV5AA", "CV5AB", "CV5AC",
           "CV5AD", "CV5AE", "CV5AF"
-        ) ~ denominators[["occupied_units"]], #"A43AA",
+        ) ~ denominators[["occupied_units"]], # "A43AA",
         # Housing units
         # .data[[variable_col]] %in% c("CM9AA", "CM9AB") ~ "CM7AA",
 
         .data[[variable_col]] %in% c("AF15001", "AF15002") ~ "AV0AA",
 
         # White
-        .data[[variable_col]] %in% c("A8L001", "A8L002") ~ "AF15001",
-
-        # White Native-born / White Foreign-born use White denominator
-        .data[[variable_col]] %in% c("BYA001", "BYA002") ~ "AF15001",
-
+        .data[[variable_col]] %in% c(
+          "A8L001", "A8L002",
+          # White Native-born / White Foreign-born use White denominator
+          "BYA001", "BYA002"
+        ) ~ "AF15001",
         .data[[variable_col]] %in% c("BS7AA", "BS7AB", "BS7AC", "BS7AD") ~ "AR5AA"
       ),
       .after = dplyr::all_of(variable_col)
@@ -303,9 +324,10 @@ join_nhgis_percent <- function(data,
                                digits = 2) {
   denom_variable_col <- paste0(denominator_prefix, variable_col)
 
-  if (!all(has_name(data, c(variable_col, denom_variable_col)))) {
+  if (!all(has_name(data, c(variable_col, value_col, denom_variable_col)))) {
     cli::cli_warn(
-      "Missing required columns: {c(variable_col, denom_variable_col)}"
+      "Missing required columns:
+      {c(variable_col, value_col, denom_variable_col)}"
     )
 
     return(data)
@@ -321,23 +343,40 @@ join_nhgis_percent <- function(data,
   )
 
   denominator_data <- data |>
-    dplyr::filter(
-      .data[[variable_col]] %in% data[[denom_variable_col]]
-    ) |>
+    dplyr::filter(.data[[variable_col]] %in% data[[denom_variable_col]]) |>
     dplyr::select(!all_of(denom_variable_col)) |>
-    dplyr::rename(
-      dplyr::all_of(denom_names)
-    ) |>
+    dplyr::rename(dplyr::all_of(denom_names)) |>
     dplyr::select(dplyr::any_of(c(join_cols, names(denom_names))))
 
   data |>
+    # TODO: Add an explicit join by that works in all cases
     dplyr::left_join(
       denominator_data
     ) |>
     suppressMessages() |>
+    fmt_perc_value_col(
+      value_col = value_col,
+      denominator_prefix = denominator_prefix,
+      perc_prefix = perc_prefix,
+      digits = digits
+    )
+}
+
+
+#' Format a percent value column with rounding and handling for 0 and NA values
+#'
+#' @noRd
+fmt_perc_value_col <- function(data,
+                               value_col = "value",
+                               denominator_prefix = "denominator_",
+                               perc_prefix = "perc_",
+                               digits = 2) {
+  denom_value_col <- paste0(denominator_prefix, value_col)
+
+  data |>
     dplyr::mutate(
       "{perc_prefix}{value_col}" := dplyr::case_when(
-        is.na(.data[[denom_variable_col]]) ~ NA_real_,
+        is.na(.data[[denom_value_col]]) ~ NA_real_,
         is.na(.data[[value_col]]) ~ NA_real_,
         .data[[denom_value_col]] == 0 ~ NA_real_,
         .default = round(.data[[value_col]] / .data[[denom_value_col]], digits = digits)

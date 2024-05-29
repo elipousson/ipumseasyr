@@ -1,18 +1,25 @@
 #' Download IPUMS extract using `ipumsr::wait_for_extract` and
 #' `ipumsr::download_extract`
 #'
+#' [download_ipumsr_extract()] is a wrapper for [ipumsr::wait_for_extract()] and
+#' [ipumsr::download_extract()] to wait until an extract is ready for download
+#' before attempting to download it.
+#'
 #' @inheritParams ipumsr::wait_for_extract
 #' @inheritParams ipumsr::download_extract
+#' @inheritDotParams ipumsr::wait_for_extract
 #' @importFrom ipumsr wait_for_extract download_extract
 #' @export
 download_ipumsr_extract <- function(extract = NULL,
                                     download_dir = getwd(),
                                     overwrite = FALSE,
                                     progress = TRUE,
+                                    ...,
                                     api_key = Sys.getenv("IPUMS_API_KEY")) {
   ipumsr::wait_for_extract(
     extract = extract,
-    api_key = api_key
+    api_key = api_key,
+    ...
   )
 
   ipumsr::download_extract(
@@ -26,12 +33,13 @@ download_ipumsr_extract <- function(extract = NULL,
 
 #' Get extract paths for extract with optional support for cached extract files
 #'
-#' Download extract with [download_ipumsr_extract()] then return a list of file
-#' paths.
+#' Download extract with [download_ipumsr_extract()] and return a list of file
+#' paths for the data and shape files.
 #'
 #' @param submit_extract If `extract` is not `NULL` and `submit_extract = TRUE`,
 #'   use [ipumsr::submit_extract] to submit the extract.
 #' @inheritParams ipumsr::submit_extract
+#' @inheritParams download_ipumsr_extract
 #' @returns A named list with "data" and "shape" elements containing extract file paths.
 #' @export
 #' @importFrom ipumsr submit_extract
@@ -76,7 +84,7 @@ get_ipumsr_extract_paths <- function(extract = NULL,
   stopifnot(!is.null(data_file) || !is.null(shape_file))
 
   list(
-      "data" = data_file,
-      "shape" = shape_file
-    )
+    "data" = data_file,
+    "shape" = shape_file
+  )
 }
