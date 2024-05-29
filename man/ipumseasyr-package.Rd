@@ -6,7 +6,7 @@
 \alias{ipumseasyr-package}
 \title{ipumseasyr: Easy Access to IPUMS Data}
 \description{
-A package with helper functions extending the {ipumsr} package for accessing NHGIS and other IMPUMS data sources.
+A package with helper functions extending the ipumsr package for accessing NHGIS and other IPUMS data sources.
 }
 \seealso{
 Useful links:

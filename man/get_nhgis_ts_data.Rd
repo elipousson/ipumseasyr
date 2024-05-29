@@ -34,15 +34,46 @@ get_nhgis_ts_data(
 )
 }
 \arguments{
-\item{output}{Used to set \code{tst_layout} value. c("tidy", "wide", "file")}
+\item{output}{Used to set \code{tst_layout} value. c("tidy", "wide", "file")
+corresponding to "time_by_row_layout", "time_by_column_layout", or
+"time_by_file_layout".}
 
-\item{extract}{If not \code{NULL}, extract is returned as is.}
+\item{geometry}{If \code{TRUE}, include shapefiles in the defined extract. If
+shapefiles is \code{NULL}, the function uses \code{\link[=list_nhgis_shapefiles]{list_nhgis_shapefiles()}} with
+\code{shape_year} as the \code{year} parameter.}
+
+\item{extract}{An \code{\link[ipumsr:ipums_extract-class]{ipums_extract}} object.}
 
 \item{data_file}{Path to a .zip archive containing an NHGIS extract or
 a single file from an NHGIS extract.}
 
 \item{shape_file}{Path to a single .shp file or a .zip archive
 containing at least one .shp file. See Details section.}
+
+\item{time_series_tables}{List of time series table specifications for any
+\href{https://www.nhgis.org/time-series-tables}{time series tables}
+to include in the extract request. Use \code{\link[ipumsr:tst_spec]{tst_spec()}} to create a
+\code{tst_spec} object containing a time series table specification. See
+examples.}
+
+\item{description}{Description of the extract.}
+
+\item{shapefiles}{Names of any \href{https://www.nhgis.org/gis-files}{shapefiles}
+to include in the extract request.}
+
+\item{data_format}{The desired format of the extract data file.
+\itemize{
+\item \code{"csv_no_header"} (default) includes only a minimal header in the first
+row
+\item \code{"csv_header"} includes a second, more descriptive header row.
+\item \code{"fixed_width"} provides data in a fixed width format
+}
+
+Note that by default, \code{\link[ipumsr:read_nhgis]{read_nhgis()}} removes the additional header row in
+\code{"csv_header"} files.
+
+Required when an extract definition includes any \code{datasets} or
+\code{time_series_tables}.}
 
 \item{download_dir}{Path to the directory where the files should be written.
 Defaults to current working directory.}
@@ -67,5 +98,7 @@ value of the \code{IPUMS_API_KEY} environment variable. See
 \description{
 Use \code{define_nhgis_ts_extract()}, \code{ipumsr::submit_extract()},
 \code{ipumsr::download_extract()}, and \code{read_nhgis_files()} to define, submit,
-download, and read a NHGIS time series extract.
+download, and read a NHGIS time series extract. This function is \emph{only}
+recommended for interactive use and is \emph{not} recommended if you are
+requesting a large number of tables or geographies.
 }

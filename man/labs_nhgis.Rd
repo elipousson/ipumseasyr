@@ -2,13 +2,14 @@
 % Please edit documentation in R/labs_nhgis.R
 \name{labs_nhgis}
 \alias{labs_nhgis}
-\title{Helper function for labelling ggplot2 plots with the appropriate credit for NHGIS data}
+\title{Label ggplot2 plots with the appropriate credit caption for NHGIS data}
 \usage{
 labs_nhgis(
   ...,
   caption = NULL,
   credit = "IPUMS NHGIS, University of Minnesota, www.nhgis.org.",
   prefix = "Source: ",
+  collapse = " ",
   width = 80
 )
 }
@@ -26,8 +27,16 @@ top-left of the plot by default.}
     \item{\code{alt,alt_insight}}{Text used for the generation of alt-text for the plot.
 See \link[ggplot2]{get_alt_text} for examples.}
   }}
+
+\item{credit}{Credit line for IPUMS.}
+
+\item{collapse}{String to collapse caption and credit. Defaults to \code{" "}. Set
+to \code{"\\n"} to place the credit line on a separate line following the
+caption. Ignored if caption is \code{NULL}.}
+
+\item{width}{Maximum width of caption line passed to \code{\link[stringr:str_wrap]{stringr::str_wrap()}}.}
 }
 \description{
-Helper function for labelling ggplot2 plots with the appropriate credit for NHGIS data
+\code{\link[=labs_nhgis]{labs_nhgis()}} adds a standard credit caption for NHGIS data to make consistent attribution easier.
 }
-\keyword{internal}
+\keyword{ggplot2}

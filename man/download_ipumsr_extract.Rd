@@ -10,6 +10,7 @@ download_ipumsr_extract(
   download_dir = getwd(),
   overwrite = FALSE,
   progress = TRUE,
+  ...,
   api_key = Sys.getenv("IPUMS_API_KEY")
 )
 }
@@ -36,11 +37,30 @@ already exist in \code{download_dir}. Defaults to \code{FALSE}.}
 \item{progress}{If \code{TRUE}, output progress bar showing the status of the
 download request. Defaults to \code{TRUE}.}
 
+\item{...}{
+  Arguments passed on to \code{\link[ipumsr:wait_for_extract]{ipumsr::wait_for_extract}}
+  \describe{
+    \item{\code{initial_delay_seconds}}{Seconds to wait before first status check. The
+wait time will automatically increase by 10 seconds between each
+successive check.}
+    \item{\code{max_delay_seconds}}{Maximum interval to wait between status checks.
+When the wait interval reaches this value, checks will continue to
+occur at \code{max_delay_seconds} intervals until the extract is complete or
+\code{timeout_seconds} is reached. Defaults to 300 seconds (5 minutes).}
+    \item{\code{timeout_seconds}}{Maximum total number of seconds to continue waiting
+for the extract before throwing an error. Defaults to 10,800 seconds (3
+hours).}
+    \item{\code{verbose}}{If \code{TRUE}, print status updates to the R console at the
+beginning of each wait interval and upon extract completion.
+Defaults to \code{TRUE}.}
+  }}
+
 \item{api_key}{API key associated with your user account. Defaults to the
 value of the \code{IPUMS_API_KEY} environment variable. See
 \code{\link[ipumsr:set_ipums_api_key]{set_ipums_api_key()}}.}
 }
 \description{
-Download IPUMS extract using \code{ipumsr::wait_for_extract} and
-\code{ipumsr::download_extract}
+\code{\link[=download_ipumsr_extract]{download_ipumsr_extract()}} is a wrapper for \code{\link[ipumsr:wait_for_extract]{ipumsr::wait_for_extract()}} and
+\code{\link[ipumsr:download_extract]{ipumsr::download_extract()}} to wait until an extract is ready for download
+before attempting to download it.
 }

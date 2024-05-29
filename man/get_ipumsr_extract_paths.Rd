@@ -23,6 +23,15 @@ get_ipumsr_extract_paths(
 \item{submit_extract}{If \code{extract} is not \code{NULL} and \code{submit_extract = TRUE},
 use \link[ipumsr:submit_extract]{ipumsr::submit_extract} to submit the extract.}
 
+\item{download_dir}{Path to the directory where the files should be written.
+Defaults to current working directory.}
+
+\item{overwrite}{If \code{TRUE}, overwrite any conflicting files that
+already exist in \code{download_dir}. Defaults to \code{FALSE}.}
+
+\item{progress}{If \code{TRUE}, output progress bar showing the status of the
+download request. Defaults to \code{TRUE}.}
+
 \item{api_key}{API key associated with your user account. Defaults to the
 value of the \code{IPUMS_API_KEY} environment variable. See
 \code{\link[ipumsr:set_ipums_api_key]{set_ipums_api_key()}}.}
@@ -31,6 +40,6 @@ value of the \code{IPUMS_API_KEY} environment variable. See
 A named list with "data" and "shape" elements containing extract file paths.
 }
 \description{
-Download extract with \code{\link[=download_ipumsr_extract]{download_ipumsr_extract()}} then return a list of file
-paths.
+Download extract with \code{\link[=download_ipumsr_extract]{download_ipumsr_extract()}} and return a list of file
+paths for the data and shape files.
 }

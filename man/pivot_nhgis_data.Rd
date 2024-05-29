@@ -14,7 +14,8 @@ pivot_nhgis_data(
   denominator_prefix = "denominator_",
   cols_vary = "slowest",
   denominators = list(persons = "A00AA", families = "A68AA", housing_units = "A41AA",
-    occupied_units = "A43AA")
+    occupied_units = "A43AA"),
+  call = caller_env()
 )
 
 join_nhgis_percent(
@@ -52,9 +53,21 @@ all of the columns from \code{data} in the pivoting process.
 
 \item{denominators}{Named list of denominator values.}
 
-\item{perc_prefix}{Prefix string to use for calculated percent value.}
+\item{call}{The execution environment of a currently running
+function, e.g. \code{call = caller_env()}. The corresponding function
+call is retrieved and mentioned in error messages as the source
+of the error.
 
-\item{label_col}{Label column name}
+You only need to supply \code{call} when throwing a condition from a
+helper function which wouldn't be relevant to mention in the
+message.
+
+Can also be \code{NULL} or a \link[rlang:topic-defuse]{defused function call} to
+respectively not display any call or hard-code a code to display.
+
+For more information about error calls, see \ifelse{html}{\link[rlang:topic-error-call]{Including function calls in error messages}}{\link[rlang:topic-error-call]{Including function calls in error messages}}.}
+
+\item{perc_prefix}{Prefix string to use for calculated percent value.}
 }
 \description{
 \code{\link[=pivot_nhgis_data]{pivot_nhgis_data()}} uses \code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}} switches NHGIS data from a
@@ -68,7 +81,7 @@ all of the most popular NHGIS time series variables. Both function uses a
 similar set of conventions as the \code{{getACS}} package to support ease of code
 reuse between NHGIS and American Community Survey (ACS) data.
 
-At presnet, all numeric columns that do not appear to be an identifier are
-pivoted.
+At present, all numeric columns that do not appear to be an identifier
+are pivoted.
 }
 \keyword{internal}

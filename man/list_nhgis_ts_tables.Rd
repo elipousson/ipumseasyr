@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_nhgis_ts_data.R
 \name{list_nhgis_ts_tables}
 \alias{list_nhgis_ts_tables}
-\title{List NHGIS time series tables}
+\title{List NHGIS time series tables using \code{ipumsr::get_metadata_nhgis}}
 \usage{
 list_nhgis_ts_tables(
   ...,
@@ -14,6 +14,9 @@ list_nhgis_ts_tables(
 }
 \arguments{
 \item{...}{Additional parameters passed to \code{ipumsr::get_metadata_nhgis()}}
+
+\item{refresh}{If \code{FALSE}, do not read a file from cache. If \code{TRUE}, read a
+file from cache if it exists at the supplied path.}
 
 \item{integration}{Optional filter for geographical integration.}
 }

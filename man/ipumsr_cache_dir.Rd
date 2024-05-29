@@ -9,3 +9,4 @@ ipumsr_cache_dir(pkg = "ipumseasyr")
 \description{
 Get path to \code{{ipumseasyr}} package cache directory
 }
+\keyword{internal}
