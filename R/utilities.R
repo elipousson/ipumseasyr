@@ -1,6 +1,6 @@
 .onLoad <- function(lib, pkg) {
   utils::data(
-    list = c("nhgis_ts_tables"),
+    list = c("nhgis_ts_tables", "usa_states"),
     package = pkg,
     envir = parent.env(environment())
   )
