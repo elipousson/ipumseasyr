@@ -145,13 +145,30 @@ define_nhgis_ts_extract <- function(year = NULL,
   )
 
   ipumsr::define_extract_nhgis(
-    description = description %||% "",
+    description = nhigs_description(
+      description = description,
+      time_series_tables
+    ),
     time_series_tables = time_series_tables,
     shapefiles = shapefiles,
     tst_layout = tst_layout,
     data_format = data_format,
     ...
   )
+}
+
+#' Helper function for creating a default NHGIS extract description
+#' @noRd
+nhigs_description <- function(description,
+                              ts_tables = NULL) {
+  if (!is.null(ts_tables)) {
+    description %||% paste0(
+      "Extract created with {ipumseasyr} R package ",
+      "using the time series tables: ", paste0(ts_tables, collapse = ", "), "."
+    )
+  } else {
+    description %||% "Extract created with the {ipumseasyr} R package."
+  }
 }
 
 #' Get NHGIS time series data
