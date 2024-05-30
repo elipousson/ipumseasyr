@@ -5,7 +5,7 @@
 \alias{usa_states}
 \title{U.S. States Reference data}
 \format{
-A data frame with 50 rows and 4 variables:
+A data frame with 51 rows and 4 variables:
 \describe{
 \item{\code{STATE}}{State name}
 \item{\code{STUSPS}}{State USPS abbreviation}
@@ -18,6 +18,6 @@ usa_states
 }
 \description{
 Reference data with U.S. state names, USPS abbreviations, and Census
-divisions, and regions.
+divisions, and regions. Includes 50 U.S. States and the District of Columbia.
 }
 \keyword{datasets}
