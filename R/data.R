@@ -9,9 +9,9 @@
 #' U.S. States Reference data
 #'
 #' Reference data with U.S. state names, USPS abbreviations, and Census
-#' divisions, and regions.
+#' divisions, and regions. Includes 50 U.S. States and the District of Columbia.
 #'
-#' @format A data frame with 50 rows and 4 variables:
+#' @format A data frame with 51 rows and 4 variables:
 #' \describe{
 #'   \item{\code{STATE}}{State name}
 #'   \item{\code{STUSPS}}{State USPS abbreviation}
