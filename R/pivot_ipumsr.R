@@ -370,6 +370,8 @@ join_nhgis_percent <- function(data,
 #'   column.
 #' @param rank,rank_n Passed to `x` and `n` arguments of [dplyr::ntile()] to
 #'   join a reference rank value.
+#' @param rank_by Used as `.by` argument of [dplyr::mutate()] if `rank_n` is not
+#'   `NULL`.
 #' @export
 #' @importFrom dplyr ntile
 join_nhgis_percent_change <- function(
@@ -377,12 +379,12 @@ join_nhgis_percent_change <- function(
     reference_year = NULL,
     value_col = "value",
     reference_prefix = "reference_",
-    gisjoin_col = "NHGISCODE",
     variable_col = "variable",
     year_col = "YEAR",
     rank_col = "rank",
     rank = NULL,
     rank_n = NULL,
+    rank_by = NULL,
     ...,
     perc_prefix = "perc_change_",
     digits = 2) {
@@ -398,13 +400,13 @@ join_nhgis_percent_change <- function(
     ) |>
     dplyr::mutate(
       "{reference_prefix}{value_col}" := .data[[value_col]],
-      "{reference_prefix}{year_col}" := .data[[year_col]]
+      "{reference_prefix}{tolower(year_col)}" := .data[[year_col]]
     ) |>
     dplyr::select(
       all_of(
         c(
           paste0(reference_prefix, c(year_col, value_col)),
-          gisjoin_col, variable_col
+          "NHGISCODE", variable_col
         )
       )
     )
@@ -415,7 +417,8 @@ join_nhgis_percent_change <- function(
         "{reference_prefix}{rank_col}" := dplyr::ntile(
           rank %||% dplyr::row_number(),
           n = rank_n
-        )
+        ),
+        .by = rank_by
       )
   }
 

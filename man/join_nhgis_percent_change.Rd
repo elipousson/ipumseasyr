@@ -9,12 +9,12 @@ join_nhgis_percent_change(
   reference_year = NULL,
   value_col = "value",
   reference_prefix = "reference_",
-  gisjoin_col = "NHGISCODE",
   variable_col = "variable",
   year_col = "YEAR",
   rank_col = "rank",
   rank = NULL,
   rank_n = NULL,
+  rank_by = NULL,
   ...,
   perc_prefix = "perc_change_",
   digits = 2
@@ -26,6 +26,9 @@ column.}
 
 \item{rank, rank_n}{Passed to \code{x} and \code{n} arguments of \code{\link[dplyr:ntile]{dplyr::ntile()}} to
 join a reference rank value.}
+
+\item{rank_by}{Used as \code{.by} argument of \code{\link[dplyr:mutate]{dplyr::mutate()}} if \code{rank_n} is not
+\code{NULL}.}
 }
 \description{
 \code{\link[=join_nhgis_percent_change]{join_nhgis_percent_change()}} joins a percent change column relative to a
