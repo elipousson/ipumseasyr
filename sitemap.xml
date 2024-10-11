@@ -1,84 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/404.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/index.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/define_nhgis_ts_extract.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/download_ipumsr_extract.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/filter_nhgisjoin.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/fmt_nhgis_places.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_cache.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_extract_paths.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/get_nhgis_ts_data.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/ipums_extract_history.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/ipumseasyr-package.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/ipumsr_cache_dir.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/join_nhgis_percent_change.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/labs_nhgis.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/list_nhgis_shapefiles.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/list_nhgis_ts_tables.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/lookup_nhgis_state.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/nhgis_ts_tables.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/pivot_nhgis_data.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/read_ipums_geometry.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/read_nhgis_data.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/read_nhgis_files.html</loc>
-  </url>
-  <url>
-    <loc>https://elipousson.github.io/ipumseasyr/reference/usa_states.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://elipousson.github.io/ipumseasyr/404.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/LICENSE-text.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/LICENSE.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/authors.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/index.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/define_nhgis_ts_extract.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/download_ipumsr_extract.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/filter_nhgisjoin.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/fmt_nhgis_places.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_cache.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_extract_paths.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/get_nhgis_ts_data.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/index.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/ipums_extract_history.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/ipumseasyr-package.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/ipumsr_cache_dir.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/join_nhgis_percent_change.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/labs_nhgis.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/list_nhgis_shapefiles.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/list_nhgis_ts_tables.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/lookup_nhgis_state.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/nhgis_ts_tables.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/pivot_nhgis_data.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/read_ipums_geometry.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/read_nhgis_data.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/read_nhgis_files.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/usa_states.html</loc></url>
 </urlset>
+
