@@ -42,7 +42,7 @@ labs_credit <- function(...,
     credit <- paste0(prefix, credit)
 
     if (!is.null(caption)) {
-      caption <- paste0(c(caption, paste0(prefix, credit)), collapse = collapse)
+      caption <- paste0(c(caption, credit), collapse = collapse)
     } else {
       caption <- credit
     }
