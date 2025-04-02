@@ -565,7 +565,14 @@ join_nhgis_percent_change <- function(
 
 #' Format a percent value column with rounding and handling for 0 and NA values
 #'
-#' @noRd
+#' [fmt_perc_value_col()] is an internal utility function for create a percent
+#' value column based on a specified value column and denominator column
+#' (following the name convention of the prefix + value column).
+#'
+#' @param data Data to use in creating the percent value column.
+#' @param denominator_data Optional data frame with prepared denominator data.
+#' @param ... Additional parameters passed to `dplyr::left_join`.
+#' @keywords internal
 fmt_perc_value_col <- function(
   data,
   value_col = "value",
