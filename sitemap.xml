@@ -8,6 +8,7 @@
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/download_ipumsr_extract.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/filter_nhgisjoin.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/fmt_nhgis_places.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/fmt_perc_value_col.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_cache.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/get_ipumsr_extract_paths.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/get_nhgis_ts_data.html</loc></url>
@@ -17,6 +18,7 @@
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/ipumsr_cache_dir.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/join_nhgis_percent_change.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/labs_nhgis.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/list_nhgis_metadata.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/list_nhgis_shapefiles.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/list_nhgis_ts_tables.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/lookup_nhgis_state.html</loc></url>
@@ -25,6 +27,7 @@
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/read_ipums_geometry.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/read_nhgis_data.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/read_nhgis_files.html</loc></url>
+<url><loc>https://elipousson.github.io/ipumseasyr/reference/summarise_denominator.html</loc></url>
 <url><loc>https://elipousson.github.io/ipumseasyr/reference/usa_states.html</loc></url>
 </urlset>
 
