@@ -7,5 +7,5 @@
 }
 
 utils::globalVariables(
-  c("GISJOIN", "DATAYEAR", "STUSPS")
+  c("GISJOIN", "DATAYEAR", "STUSPS", "YEAR")
 )
