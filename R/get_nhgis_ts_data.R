@@ -93,7 +93,7 @@ define_nhgis_ts_extract <- function(
     if (validate) {
       tables <- rlang::arg_match(
         tables,
-        values = nhgis_ts_tables,
+        values = ipumseasyr::nhgis_ts_tables,
         multiple = TRUE
       )
     }

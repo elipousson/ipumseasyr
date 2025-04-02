@@ -6,7 +6,10 @@ join_us_census_state <- function(data) {
   )
 
   data |>
-    dplyr::left_join(usa_states, by = "STATE")
+    dplyr::left_join(
+      ipumseasyr::usa_states,
+      by = "STATE"
+    )
 }
 
 
