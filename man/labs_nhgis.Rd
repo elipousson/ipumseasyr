@@ -20,18 +20,20 @@ labs_nhgis(
     \item{\code{title}}{The text for the title.}
     \item{\code{subtitle}}{The text for the subtitle for the plot which will be
 displayed below the title.}
-    \item{\code{caption}}{The text for the caption which will be displayed in the
-bottom-right of the plot by default.}
     \item{\code{tag}}{The text for the tag label which will be displayed at the
 top-left of the plot by default.}
     \item{\code{alt,alt_insight}}{Text used for the generation of alt-text for the plot.
 See \link[ggplot2]{get_alt_text} for examples.}
   }}
 
+\item{caption}{Optional text appearing before IPUMS credit text.}
+
 \item{credit}{Credit line for IPUMS.}
 
-\item{collapse}{String to collapse caption and credit. Defaults to \code{" "}. Set
-to \code{"\\n"} to place the credit line on a separate line following the
+\item{prefix}{Prefix text appearing before \code{credit} text.}
+
+\item{collapse}{String to collapse \code{caption} and \code{credit}. Defaults to \code{" "}.
+Set to \code{"\\n"} to place the credit line on a separate line following the
 caption. Ignored if caption is \code{NULL}.}
 
 \item{width}{Maximum width of caption line passed to \code{\link[stringr:str_wrap]{stringr::str_wrap()}}.}

@@ -4,19 +4,23 @@
 #'
 #' @param credit Credit line for IPUMS.
 #' @param width Maximum width of caption line passed to [stringr::str_wrap()].
+#' @param caption Optional text appearing before IPUMS credit text.
 #' @inheritDotParams ggplot2::labs
-#' @param collapse String to collapse caption and credit. Defaults to `" "`. Set
-#'   to `"\n"` to place the credit line on a separate line following the
+#' @param collapse String to collapse `caption` and `credit`. Defaults to `" "`.
+#'   Set to `"\n"` to place the credit line on a separate line following the
 #'   caption. Ignored if caption is `NULL`.
+#' @param prefix Prefix text appearing before `credit` text.
 #' @keywords ggplot2
 #' @export
 #' @importFrom stringr str_wrap
-labs_nhgis <- function(...,
-                       caption = NULL,
-                       credit = "IPUMS NHGIS, University of Minnesota, www.nhgis.org.",
-                       prefix = "Source: ",
-                       collapse = " ",
-                       width = 80) {
+labs_nhgis <- function(
+  ...,
+  caption = NULL,
+  credit = "IPUMS NHGIS, University of Minnesota, www.nhgis.org.",
+  prefix = "Source: ",
+  collapse = " ",
+  width = 80
+) {
   labs_credit(
     ...,
     caption = caption,
@@ -29,13 +33,15 @@ labs_nhgis <- function(...,
 
 #' Helper for creating ggplot2 labels with a credit line in the caption
 #' @noRd
-labs_credit <- function(...,
-                        caption = NULL,
-                        credit = NULL,
-                        prefix = "Source: ",
-                        collapse = " ",
-                        width = 80,
-                        call = caller_env()) {
+labs_credit <- function(
+  ...,
+  caption = NULL,
+  credit = NULL,
+  prefix = "Source: ",
+  collapse = " ",
+  width = 80,
+  call = caller_env()
+) {
   check_installed("ggplot2", call = call)
 
   if (!is.null(credit)) {

@@ -13,6 +13,8 @@ list_file_select <- function(file = NULL, type = "data") {
 #' Read IPUMS geometry using `ipumsr::read_ipums_sf`
 #'
 #' @inheritParams ipumsr::read_ipums_sf
+#' @param path Named list or vector with the name "shape". Optional if
+#' `shape_file` is supplied.
 #' @export
 #' @importFrom ipumsr read_ipums_sf
 read_ipums_geometry <- function(
