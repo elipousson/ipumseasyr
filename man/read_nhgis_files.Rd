@@ -36,6 +36,13 @@ column types. Otherwise, all are suppressed.
 
 Will be overridden by \code{readr.show_progress} and \code{readr.show_col_types}
 options, if they are set.}
+
+\item{geometry}{If \code{FALSE}, return a list containing the data and geometry as
+two separate elements. If \code{TRUE}, return a data frame with the geometry
+joined to the data and converted to a sf object.}
+
+\item{...}{Additional parameters passed to both \code{\link[=read_nhgis_data]{read_nhgis_data()}} and
+\code{\link[=read_ipums_geometry]{read_ipums_geometry()}}.}
 }
 \value{
 A named list with "data" and "shape" elements or a combined sf data

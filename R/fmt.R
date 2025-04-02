@@ -20,13 +20,15 @@ join_us_census_state <- function(data) {
 #'
 #' @param name_col Name column to use as the basis for the label.
 #' @param label_col Label column name.
-#' @param remove_pattern Passed to `pattern` for [stringr::str_remove()]
+#' @param remove_pattern Passed to `pattern` for [stringr::str_remove()]. Defaults to `" city$"` to trim repetitive text from the end of the place names.
 #' @keywords internal fmt
 #' @export
-fmt_nhgis_places <- function(data,
-                             label_col = "label",
-                             name_col = "NAME",
-                             remove_pattern = " city$") {
+fmt_nhgis_places <- function(
+  data,
+  label_col = "label",
+  name_col = "NAME",
+  remove_pattern = " city$"
+) {
   stopifnot(
     all(rlang::has_name(data, name_col)),
     !rlang::has_name(data, label_col)
@@ -35,7 +37,10 @@ fmt_nhgis_places <- function(data,
   data |>
     join_us_census_state() |>
     dplyr::mutate(
-      "{label_col}" := stringr::str_remove(.data[[name_col]], remove_pattern),
+      "{label_col}" := stringr::str_remove(
+        .data[[name_col]],
+        remove_pattern
+      ),
       "{label_col}" := paste0(.data[[label_col]], ", ", STUSPS)
     )
 }

@@ -19,6 +19,9 @@ read_ipums_geometry(
 \item{shape_file}{Path to a single .shp file or a .zip archive
 containing at least one .shp file. See Details section.}
 
+\item{path}{Named list or vector with the name "shape". Optional if
+\code{shape_file} is supplied.}
+
 \item{file_select}{If \code{shape_file} is a .zip archive that
 contains multiple files, an expression identifying the files to load.
 Accepts a character string specifying the

@@ -9,13 +9,16 @@
 #' @param integration Optional filter for geographical integration.
 #' @inheritParams get_ipumsr_cache
 #' @export
-list_nhgis_ts_tables <- function(...,
-                                 cache = TRUE,
-                                 cache_file = "nhgis_time_series_tables.rds",
-                                 refresh = FALSE,
-                                 integration = NULL) {
+list_nhgis_ts_tables <- function(
+  ...,
+  cache = TRUE,
+  cache_file = "nhgis_time_series_tables.rds",
+  refresh = FALSE,
+  integration = NULL
+) {
   cache_path <- file.path(
-    ipumsr_cache_dir(), cache_file
+    ipumsr_cache_dir(),
+    cache_file
   )
 
   tables <- get_ipumsr_cache(
@@ -36,7 +39,8 @@ list_nhgis_ts_tables <- function(...,
   }
 
   if (!is.null(integration)) {
-    integration <- switch(tolower(integration),
+    integration <- switch(
+      tolower(integration),
       "nominal" = "Nominal",
       "2010" = "Standardized to 2010",
       "standardized" = "Standardized to 2010",
@@ -68,21 +72,23 @@ list_nhgis_ts_tables <- function(...,
 #'   corresponding to "time_by_row_layout", "time_by_column_layout", or
 #'   "time_by_file_layout".
 #' @export
-define_nhgis_ts_extract <- function(year = NULL,
-                                    tables = NULL,
-                                    geography = c("county", "state"),
-                                    extent = "us",
-                                    output = c("tidy", "wide", "file"),
-                                    shape_year = NULL,
-                                    basis = 2008,
-                                    geometry = FALSE,
-                                    ...,
-                                    time_series_tables = NULL,
-                                    description = NULL,
-                                    shapefiles = NULL,
-                                    data_format = "csv_no_header",
-                                    validate = TRUE,
-                                    api_key = Sys.getenv("IPUMS_API_KEY")) {
+define_nhgis_ts_extract <- function(
+  year = NULL,
+  tables = NULL,
+  geography = c("county", "state"),
+  extent = "us",
+  output = c("tidy", "wide", "file"),
+  shape_year = NULL,
+  basis = 2008,
+  geometry = FALSE,
+  ...,
+  time_series_tables = NULL,
+  description = NULL,
+  shapefiles = NULL,
+  data_format = "csv_no_header",
+  validate = TRUE,
+  api_key = Sys.getenv("IPUMS_API_KEY")
+) {
   if (is.null(time_series_tables)) {
     if (validate) {
       tables <- rlang::arg_match(
@@ -98,21 +104,11 @@ define_nhgis_ts_extract <- function(year = NULL,
       tables,
       \(name) {
         if (validate) {
-          tbl_metadata <- ipumsr::get_metadata_nhgis(
+          match_nhgis_ts_meta(
             time_series_table = name,
+            year = year,
+            geography = geography,
             api_key = api_key
-          )
-
-          year <- rlang::arg_match(
-            year,
-            tbl_metadata[["years"]][["name"]],
-            multiple = TRUE
-          )
-
-          geography <- rlang::arg_match(
-            geography,
-            tbl_metadata[["geog_levels"]][["name"]],
-            multiple = TRUE
           )
         }
 
@@ -126,19 +122,21 @@ define_nhgis_ts_extract <- function(year = NULL,
   }
 
   if (geometry) {
-    shapefiles <- shapefiles %||% list_nhgis_shapefiles(
-      geography = geography,
-      year = shape_year %||% year,
-      extent = extent,
-      basis = basis,
-      validate = validate,
-      api_key = api_key
-    )
+    shapefiles <- shapefiles %||%
+      list_nhgis_shapefiles(
+        geography = geography,
+        year = shape_year %||% year,
+        extent = extent,
+        basis = basis,
+        validate = validate,
+        api_key = api_key
+      )
   }
 
   output <- rlang::arg_match(output)
 
-  tst_layout <- switch(output,
+  tst_layout <- switch(
+    output,
     "tidy" = "time_by_row_layout",
     "wide" = "time_by_column_layout",
     "file" = "time_by_file_layout"
@@ -157,15 +155,45 @@ define_nhgis_ts_extract <- function(year = NULL,
   )
 }
 
+#' @noRd
+match_nhgis_ts_meta <- function(
+  time_series_table,
+  year = NULL,
+  geography = NULL,
+  api_key = Sys.getenv("IPUMS_API_KEY"),
+  error_call = caller_env()
+) {
+  tbl_metadata <- ipumsr::get_metadata_nhgis(
+    time_series_table = time_series_table,
+    api_key = api_key
+  )
+
+  rlang::arg_match(
+    year,
+    tbl_metadata[["years"]][["name"]],
+    multiple = TRUE,
+    error_call = error_call
+  )
+
+  rlang::arg_match(
+    geography,
+    tbl_metadata[["geog_levels"]][["name"]],
+    multiple = TRUE,
+    error_call = error_call
+  )
+}
+
 #' Helper function for creating a default NHGIS extract description
 #' @noRd
-nhigs_description <- function(description,
-                              ts_tables = NULL) {
+nhigs_description <- function(description, ts_tables = NULL) {
   if (!is.null(ts_tables)) {
-    description %||% paste0(
-      "Extract created with {ipumseasyr} R package ",
-      "using the time series tables: ", paste0(ts_tables, collapse = ", "), "."
-    )
+    description %||%
+      paste0(
+        "Extract created with {ipumseasyr} R package ",
+        "using the time series tables: ",
+        paste0(ts_tables, collapse = ", "),
+        "."
+      )
   } else {
     description %||% "Extract created with the {ipumseasyr} R package."
   }
@@ -184,32 +212,34 @@ nhigs_description <- function(description,
 #' @inheritParams ipumsr::download_extract
 #' @inheritParams read_nhgis_files
 #' @export
-get_nhgis_ts_data <- function(year = NULL,
-                              tables = NULL,
-                              geography = c("county", "state"),
-                              extent = "us",
-                              output = c("tidy", "wide", "file"),
-                              basis = 2008,
-                              shape_year = NULL,
-                              geometry = FALSE,
-                              extract = NULL,
-                              data_file = NULL,
-                              shape_file = NULL,
-                              state = NULL,
-                              ...,
-                              time_series_tables = NULL,
-                              description = NULL,
-                              shapefiles = NULL,
-                              data_format = "csv_no_header",
-                              validate = TRUE,
-                              submit_extract = TRUE,
-                              download_extract = TRUE,
-                              read_files = TRUE,
-                              download_dir = getwd(),
-                              overwrite = FALSE,
-                              progress = TRUE,
-                              verbose = progress,
-                              api_key = Sys.getenv("IPUMS_API_KEY")) {
+get_nhgis_ts_data <- function(
+  year = NULL,
+  tables = NULL,
+  geography = c("county", "state"),
+  extent = "us",
+  output = c("tidy", "wide", "file"),
+  basis = 2008,
+  shape_year = NULL,
+  geometry = FALSE,
+  extract = NULL,
+  data_file = NULL,
+  shape_file = NULL,
+  state = NULL,
+  ...,
+  time_series_tables = NULL,
+  description = NULL,
+  shapefiles = NULL,
+  data_format = "csv_no_header",
+  validate = TRUE,
+  submit_extract = TRUE,
+  download_extract = TRUE,
+  read_files = TRUE,
+  download_dir = getwd(),
+  overwrite = FALSE,
+  progress = TRUE,
+  verbose = progress,
+  api_key = Sys.getenv("IPUMS_API_KEY")
+) {
   if (is.null(data_file) && is.null(extract)) {
     extract <- define_nhgis_ts_extract(
       year = year,
@@ -249,4 +279,66 @@ get_nhgis_ts_data <- function(year = NULL,
     verbose = verbose,
     geometry = geometry
   )
+}
+
+
+#' List NHGIS metadata
+#'
+#' [list_nhgis_metadata()] uses `ipumsr::get_metadata_nhgis` to return and
+#' (optionally) cache a data frame with metadata for NHGIS tables.
+#'
+#' @param cache_file Default file name to use for cached metadata.
+#' @inheritDotParams ipumsr::get_metadata_nhgis -type
+#' @param cache If `TRUE`, cache metadata to file.
+#' @param refresh If `TRUE`, force a refresh of the cached metadata file.
+#' @param integration Optionally filter to "Standardized to 2010" or "Nominal" geographic integration. Values of "2010" or "standardized" are treated as "Standardized to 2010".
+#' @keywords internal
+list_nhgis_metadata <- function(
+  ...,
+  cache = FALSE,
+  cache_file = "nhgis_time_series_tables.rds",
+  refresh = FALSE,
+  integration = NULL
+) {
+  cache_path <- ipumsr_cache_dir()
+
+  if (!is.null(cache_file)) {
+    cache_path <- file.path(
+      cache_path,
+      cache_file
+    )
+  }
+
+  tables <- get_ipumsr_cache(
+    {
+      ipumsr::get_metadata_nhgis(
+        type = "time_series_tables",
+        ...
+      )
+    },
+    file = cache_file,
+    path = ipumsr_cache_dir(),
+    refresh = refresh
+  )
+
+  if (cache && (!file.exists(cache_path) || refresh)) {
+    check_installed("readr")
+    readr::write_rds(tables, file = cache_path)
+  }
+
+  if (!is.null(integration)) {
+    integration <- switch(
+      tolower(integration),
+      "nominal" = "Nominal",
+      "2010" = "Standardized to 2010",
+      "standardized" = "Standardized to 2010",
+      "standardized to 2010" = "Standardized to 2010"
+    )
+
+    tables <- tables[
+      table[["geographic_integration"]] == integration,
+    ]
+  }
+
+  tables
 }

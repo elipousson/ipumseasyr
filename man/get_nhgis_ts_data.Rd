@@ -50,6 +50,9 @@ a single file from an NHGIS extract.}
 \item{shape_file}{Path to a single .shp file or a .zip archive
 containing at least one .shp file. See Details section.}
 
+\item{...}{Additional parameters passed to both \code{\link[=read_nhgis_data]{read_nhgis_data()}} and
+\code{\link[=read_ipums_geometry]{read_ipums_geometry()}}.}
+
 \item{time_series_tables}{List of time series table specifications for any
 \href{https://www.nhgis.org/time-series-tables}{time series tables}
 to include in the extract request. Use \code{\link[ipumsr:tst_spec]{tst_spec()}} to create a

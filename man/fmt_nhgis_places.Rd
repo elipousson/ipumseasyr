@@ -17,7 +17,7 @@ fmt_nhgis_places(
 
 \item{name_col}{Name column to use as the basis for the label.}
 
-\item{remove_pattern}{Passed to \code{pattern} for \code{\link[stringr:str_remove]{stringr::str_remove()}}}
+\item{remove_pattern}{Passed to \code{pattern} for \code{\link[stringr:str_remove]{stringr::str_remove()}}. Defaults to \code{" city$"} to trim repetitive text from the end of the place names.}
 }
 \description{
 \code{\link[=fmt_nhgis_places]{fmt_nhgis_places()}} joins Census division, region, and USPS abbreviation
