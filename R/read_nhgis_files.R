@@ -1,15 +1,11 @@
 #' List files from IPUMS zip file download
 #'
 #' @noRd
-list_file_select <- function(file = NULL,
-                             type = "data") {
+list_file_select <- function(file = NULL, type = "data") {
   # FIXME: This is duplicative w/ ipumsr::ipums_list_files
   files <- utils::unzip(file, list = TRUE)
 
-  pattern <- switch(type,
-    "data" = ".+csv$",
-    "shape" = ".+(shp|zip)$"
-  )
+  pattern <- switch(type, "data" = ".+csv$", "shape" = ".+(shp|zip)$")
 
   files[grepl(pattern, files[["Name"]]), "Name"]
 }
@@ -19,14 +15,16 @@ list_file_select <- function(file = NULL,
 #' @inheritParams ipumsr::read_ipums_sf
 #' @export
 #' @importFrom ipumsr read_ipums_sf
-read_ipums_geometry <- function(shape_file = NULL,
-                                path = NULL,
-                                file_select = NULL,
-                                vars = "GISJOIN",
-                                encoding = NULL,
-                                bind_multiple = TRUE,
-                                add_layer_var = NULL,
-                                verbose = FALSE) {
+read_ipums_geometry <- function(
+  shape_file = NULL,
+  path = NULL,
+  file_select = NULL,
+  vars = "GISJOIN",
+  encoding = NULL,
+  bind_multiple = TRUE,
+  add_layer_var = NULL,
+  verbose = FALSE
+) {
   if (is.null(shape_file) && has_name(path, "shape")) {
     shape_file <- path[["shape"]]
   }
@@ -55,19 +53,21 @@ read_ipums_geometry <- function(shape_file = NULL,
 #' @export
 #' @importFrom vctrs vec_rbind
 #' @importFrom ipumsr read_nhgis
-read_nhgis_data <- function(data_file = NULL,
-                            path = NULL,
-                            file_select = NULL,
-                            multiple = TRUE,
-                            verbose = FALSE,
-                            ...,
-                            format = c("tidy", "wide"),
-                            variable_col = "variable",
-                            value_col = "value",
-                            column_title_col = "column_title",
-                            denominator_prefix = "denominator_",
-                            perc_prefix = "perc_",
-                            digits = 2) {
+read_nhgis_data <- function(
+  data_file = NULL,
+  path = NULL,
+  file_select = NULL,
+  multiple = TRUE,
+  verbose = FALSE,
+  ...,
+  format = c("tidy", "wide"),
+  variable_col = "variable",
+  value_col = "value",
+  column_title_col = "column_title",
+  denominator_prefix = "denominator_",
+  perc_prefix = "perc_",
+  digits = 2
+) {
   if (is.null(data_file) && has_name(path, "data")) {
     data_file <- path[["data"]]
   }
@@ -122,39 +122,49 @@ read_nhgis_data <- function(data_file = NULL,
 #' @rdname read_nhgis_data
 #' @keywords internal
 #' @export
-read_nhgis_ext <- function(data_file,
-                           file_select = NULL,
-                           verbose = FALSE,
-                           var_attrs = c("val_labels", "var_label", "var_desc"),
-                           show_col_types = FALSE,
-                           ...,
-                           format = "tidy",
-                           variable_col = "variable",
-                           value_col = "value",
-                           column_title_col = "column_title",
-                           denominator_prefix = "denominator_",
-                           perc_prefix = "perc_",
-                           digits = 2) {
+read_nhgis_ext <- function(
+  data_file,
+  file_select = NULL,
+  verbose = FALSE,
+  var_attrs = c("val_labels", "var_label", "var_desc"),
+  ...,
+  format = "tidy",
+  variable_col = "variable",
+  value_col = "value",
+  column_title_col = "column_title",
+  denominator_prefix = "denominator_",
+  perc_prefix = "perc_",
+  digits = 2
+) {
   format <- arg_match(format, c("tidy", "wide"))
 
   data <- ipumsr::read_nhgis(
     data_file = data_file,
-    file_select = file,
+    file_select = file_select,
     verbose = verbose,
     var_attrs = var_attrs,
-    show_col_types = show_col_types,
     ...
   )
 
-  if (has_name(data, "DATAYEAR") & !has_name(data, "YEAR")) {
-    cli::cli_alert_info(
-      "Using {.col DATAYEAR} as the {.col YEAR} column value"
-    )
-
-    data <- data |>
-      dplyr::mutate(
-        YEAR = DATAYEAR
+  if (has_name(data, "DATAYEAR")) {
+    if (!has_name(data, "YEAR")) {
+      cli::cli_alert_info(
+        "Using {.col DATAYEAR} as the {.col YEAR} column value"
       )
+
+      data <- data |>
+        dplyr::mutate(
+          YEAR = DATAYEAR
+        )
+    } else {
+      data <- data |>
+        dplyr::mutate(
+          YEAR = dplyr::coalesce(
+            YEAR,
+            DATAYEAR
+          )
+        )
+    }
   }
 
   if (format == "wide") {
@@ -191,18 +201,25 @@ read_nhgis_ext <- function(data_file,
 #' @inheritParams read_ipums_geometry
 #' @param data_file_select,shape_file_select Passed to `file_select` parameter
 #'   of [read_nhgis_data()] or [read_ipums_geometry()].
+#' @param geometry If `FALSE`, return a list containing the data and geometry as
+#'   two separate elements. If `TRUE`, return a data frame with the geometry
+#'   joined to the data and converted to a sf object.
+#' @param ... Additional parameters passed to both [read_nhgis_data()] and
+#'   [read_ipums_geometry()].
 #' @returns A named list with "data" and "shape" elements or a combined sf data
 #'   frame.
 #' @export
 #' @importFrom dplyr left_join join_by
-read_nhgis_files <- function(path = NULL,
-                             data_file = NULL,
-                             data_file_select = NULL,
-                             shape_file = NULL,
-                             shape_file_select = NULL,
-                             verbose = FALSE,
-                             geometry = FALSE,
-                             ...) {
+read_nhgis_files <- function(
+  path = NULL,
+  data_file = NULL,
+  data_file_select = NULL,
+  shape_file = NULL,
+  shape_file_select = NULL,
+  verbose = FALSE,
+  geometry = FALSE,
+  ...
+) {
   nhgis_data <- read_nhgis_data(
     path = path,
     data_file = data_file,
@@ -213,7 +230,10 @@ read_nhgis_files <- function(path = NULL,
 
   nhgis_shape <- NULL
 
-  if (!is.null(shape_file) || (has_name(path, "shape") && !is.null(path[["shape"]]))) {
+  if (
+    !is.null(shape_file) ||
+      (has_name(path, "shape") && !is.null(path[["shape"]]))
+  ) {
     nhgis_shape <- read_ipums_geometry(
       path = path,
       shape_file = shape_file,
