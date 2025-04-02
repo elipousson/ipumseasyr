@@ -519,18 +519,22 @@ join_nhgis_percent_change <- function(
     has_length(reference_year, 1)
   )
 
+  ref_value_col <- paste0(reference_prefix, tolower(value_col))
+  ref_year_col <- paste0(reference_prefix, tolower(year_col))
+
   reference_data <- data |>
     dplyr::filter(
       .data[[year_col]] == reference_year
     ) |>
     dplyr::mutate(
-      "{reference_prefix}{value_col}" := .data[[value_col]],
-      "{reference_prefix}{tolower(year_col)}" := .data[[year_col]]
+      "{ref_value_col}" := .data[[value_col]],
+      "{ref_year_col}" := .data[[year_col]]
     ) |>
     dplyr::select(
       all_of(
         c(
-          paste0(reference_prefix, c(year_col, value_col)),
+          ref_value_col,
+          ref_year_col,
           "NHGISCODE",
           variable_col
         )
