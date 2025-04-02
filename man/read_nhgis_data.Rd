@@ -26,7 +26,6 @@ read_nhgis_ext(
   file_select = NULL,
   verbose = FALSE,
   var_attrs = c("val_labels", "var_label", "var_desc"),
-  show_col_types = FALSE,
   ...,
   format = "tidy",
   variable_col = "variable",
