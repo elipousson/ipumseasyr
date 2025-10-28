@@ -56,6 +56,7 @@ get_ipumsr_extract_paths <- function(extract = NULL,
                                      overwrite = FALSE,
                                      progress = TRUE,
                                      refresh = FALSE,
+                                     recursive = TRUE,
                                      api_key = Sys.getenv("IPUMS_API_KEY")) {
   if (!submit_extract && !download_extract) {
     # FIXME: Add warning for this case
@@ -80,10 +81,14 @@ get_ipumsr_extract_paths <- function(extract = NULL,
         )
       },
       file = paste0(
-        gsub("/|\\.|:", "", extract[["download_links"]][["table_data"]][["url"]]),
+        gsub(
+          "/|\\.|:",
+          "",
+          extract[["download_links"]][["table_data"]][["url"]]
+        ),
         ".rds"
       ),
-      path = ipumsr_cache_dir(),
+      path = ipumsr_cache_dir(recursive = recursive),
       refresh = refresh
     )
 

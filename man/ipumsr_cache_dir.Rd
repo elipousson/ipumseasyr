@@ -4,7 +4,11 @@
 \alias{ipumsr_cache_dir}
 \title{Get path to \code{{ipumseasyr}} package cache directory}
 \usage{
-ipumsr_cache_dir(pkg = "ipumseasyr")
+ipumsr_cache_dir(pkg = "ipumseasyr", recursive = TRUE)
+}
+\arguments{
+\item{recursive}{logical. Should elements of the path other than the
+    last be created?  If true, like the Unix command \command{mkdir -p}.}
 }
 \description{
 Get path to \code{{ipumseasyr}} package cache directory

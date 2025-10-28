@@ -14,7 +14,8 @@ list_nhgis_ts_tables <- function(
   cache = TRUE,
   cache_file = "nhgis_time_series_tables.rds",
   refresh = FALSE,
-  integration = NULL
+  integration = NULL,
+  recursive = TRUE
 ) {
   cache_path <- file.path(
     ipumsr_cache_dir(),
@@ -29,7 +30,7 @@ list_nhgis_ts_tables <- function(
       )
     },
     file = cache_file,
-    path = ipumsr_cache_dir(),
+    path = ipumsr_cache_dir(recursive = recursive),
     refresh = refresh
   )
 
@@ -293,14 +294,16 @@ get_nhgis_ts_data <- function(
 #' @param refresh If `TRUE`, force a refresh of the cached metadata file.
 #' @param integration Optionally filter to "Standardized to 2010" or "Nominal" geographic integration. Values of "2010" or "standardized" are treated as "Standardized to 2010".
 #' @keywords internal
+#' @export
 list_nhgis_metadata <- function(
   ...,
   cache = FALSE,
   cache_file = "nhgis_time_series_tables.rds",
   refresh = FALSE,
-  integration = NULL
+  integration = NULL,
+  recursive = TRUE
 ) {
-  cache_path <- ipumsr_cache_dir()
+  cache_path <- ipumsr_cache_dir(recursive = recursive)
 
   if (!is.null(cache_file)) {
     cache_path <- file.path(
@@ -317,7 +320,7 @@ list_nhgis_metadata <- function(
       )
     },
     file = cache_file,
-    path = ipumsr_cache_dir(),
+    path = ipumsr_cache_dir(recursive = recursive),
     refresh = refresh
   )
 

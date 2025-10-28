@@ -39,14 +39,12 @@ shapefiles is \code{NULL}, the function uses \code{\link[=list_nhgis_shapefiles]
 to include in the extract request. Use \code{\link[ipumsr:ds_spec]{ds_spec()}} to create a
 \code{ds_spec} object containing a dataset specification. See examples.}
     \item{\code{geographic_extents}}{Vector of geographic extents to use for
-all of the \code{datasets} in the extract definition (for instance, to obtain
-data within a particular state). Use \code{"*"} to select all available extents.
+all of the \code{datasets} and \code{time_series_tables} in the extract
+definition (for instance, to obtain data within a specified state).
+By default, selects all available extents.
 
-Required when any of the \code{datasets} included in the extract definition
-include \code{geog_levels} that require extent selection. See
-\code{\link[ipumsr:get_metadata_nhgis]{get_metadata_nhgis()}} to determine if a geographic level requires extent
-selection. At the time of writing, NHGIS supports extent selection only
-for blocks and block groups.}
+Use \code{\link[ipumsr:get_metadata]{get_metadata()}} to identify the available extents for a given
+dataset or time series table, if any.}
     \item{\code{breakdown_and_data_type_layout}}{The desired layout
 of any \code{datasets} that have multiple data types or breakdown values.
 \itemize{
@@ -58,7 +56,7 @@ own file
 
 Required if any \code{datasets} included in the extract definition consist of
 multiple data types (for instance, estimates and margins of error) or have
-multiple breakdown values specified. See \code{\link[ipumsr:get_metadata_nhgis]{get_metadata_nhgis()}} to
+multiple breakdown values specified. See \code{\link[ipumsr:get_metadata]{get_metadata()}} to
 determine whether a requested dataset has multiple data types.}
   }}
 
@@ -81,8 +79,8 @@ row
 \item \code{"fixed_width"} provides data in a fixed width format
 }
 
-Note that by default, \code{\link[ipumsr:read_nhgis]{read_nhgis()}} removes the additional header row in
-\code{"csv_header"} files.
+Note that by default, \code{\link[ipumsr:read_ipums_agg]{read_ipums_agg()}} removes the additional header row
+in \code{"csv_header"} files.
 
 Required when an extract definition includes any \code{datasets} or
 \code{time_series_tables}.}

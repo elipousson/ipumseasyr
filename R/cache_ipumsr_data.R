@@ -1,12 +1,13 @@
 #' Get path to `{ipumseasyr}` package cache directory
 #'
 #' @keywords internal
+#' @inheritParams base::dir.create
 #' @export
 #' @importFrom rappdirs user_cache_dir
-ipumsr_cache_dir <- function(pkg = "ipumseasyr") {
+ipumsr_cache_dir <- function(pkg = "ipumseasyr", recursive = TRUE) {
   cache_dir <- rappdirs::user_cache_dir(pkg)
   if (!dir.exists(cache_dir)) {
-    dir.create(cache_dir)
+    dir.create(cache_dir, recursive = recursive)
   }
   cache_dir
 }

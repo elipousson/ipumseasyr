@@ -31,7 +31,7 @@ For a list of codes used to refer to each collection, see
 \item{download_dir}{Path to the directory where the files should be written.
 Defaults to current working directory.}
 
-\item{overwrite}{If \code{TRUE}, overwrite any conflicting files that
+\item{overwrite}{If \code{TRUE}, overwrite files with the same name that
 already exist in \code{download_dir}. Defaults to \code{FALSE}.}
 
 \item{progress}{If \code{TRUE}, output progress bar showing the status of the

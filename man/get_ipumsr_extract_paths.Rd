@@ -14,6 +14,7 @@ get_ipumsr_extract_paths(
   overwrite = FALSE,
   progress = TRUE,
   refresh = FALSE,
+  recursive = TRUE,
   api_key = Sys.getenv("IPUMS_API_KEY")
 )
 }
@@ -26,7 +27,7 @@ use \link[ipumsr:submit_extract]{ipumsr::submit_extract} to submit the extract.}
 \item{download_dir}{Path to the directory where the files should be written.
 Defaults to current working directory.}
 
-\item{overwrite}{If \code{TRUE}, overwrite any conflicting files that
+\item{overwrite}{If \code{TRUE}, overwrite files with the same name that
 already exist in \code{download_dir}. Defaults to \code{FALSE}.}
 
 \item{progress}{If \code{TRUE}, output progress bar showing the status of the

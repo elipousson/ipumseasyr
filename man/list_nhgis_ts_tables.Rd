@@ -9,7 +9,8 @@ list_nhgis_ts_tables(
   cache = TRUE,
   cache_file = "nhgis_time_series_tables.rds",
   refresh = FALSE,
-  integration = NULL
+  integration = NULL,
+  recursive = TRUE
 )
 }
 \arguments{

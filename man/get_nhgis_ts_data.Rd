@@ -72,8 +72,8 @@ row
 \item \code{"fixed_width"} provides data in a fixed width format
 }
 
-Note that by default, \code{\link[ipumsr:read_nhgis]{read_nhgis()}} removes the additional header row in
-\code{"csv_header"} files.
+Note that by default, \code{\link[ipumsr:read_ipums_agg]{read_ipums_agg()}} removes the additional header row
+in \code{"csv_header"} files.
 
 Required when an extract definition includes any \code{datasets} or
 \code{time_series_tables}.}
@@ -81,7 +81,7 @@ Required when an extract definition includes any \code{datasets} or
 \item{download_dir}{Path to the directory where the files should be written.
 Defaults to current working directory.}
 
-\item{overwrite}{If \code{TRUE}, overwrite any conflicting files that
+\item{overwrite}{If \code{TRUE}, overwrite files with the same name that
 already exist in \code{download_dir}. Defaults to \code{FALSE}.}
 
 \item{progress}{If \code{TRUE}, output progress bar showing the status of the
