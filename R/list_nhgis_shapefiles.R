@@ -29,13 +29,15 @@ lookup_nhgis_state <- function(state) {
 #'
 #' @keywords internal
 #' @export
-list_nhgis_shapefiles <- function(geography = c("county", "state"),
-                                  year,
-                                  extent = "us",
-                                  basis = 2008,
-                                  validate = FALSE,
-                                  ...,
-                                  api_key = Sys.getenv("IPUMS_API_KEY")) {
+list_nhgis_shapefiles <- function(
+  geography = c("county", "state"),
+  year,
+  extent = "us",
+  basis = 2008,
+  validate = FALSE,
+  ...,
+  api_key = Sys.getenv("IPUMS_API_KEY")
+) {
   if (extent != "us") {
     extent <- lookup_nhgis_state(extent)
   }

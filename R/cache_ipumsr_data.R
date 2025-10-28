@@ -22,10 +22,12 @@ ipumsr_cache_dir <- function(pkg = "ipumseasyr", recursive = TRUE) {
 #' @param path Path to package cache directory. Defaults to [ipumsr_cache_dir()]
 #' @keywords internal
 #' @export
-get_ipumsr_cache <- function(code,
-                             refresh = FALSE,
-                             file = NULL,
-                             path = ipumsr_cache_dir()) {
+get_ipumsr_cache <- function(
+  code,
+  refresh = FALSE,
+  file = NULL,
+  path = ipumsr_cache_dir()
+) {
   if (!refresh && file.exists(file.path(path, file))) {
     check_installed("readr")
     return(readr::read_rds(file.path(path, file)))

@@ -10,14 +10,18 @@
 #' @inheritDotParams ipumsr::wait_for_extract
 #' @importFrom ipumsr wait_for_extract download_extract
 #' @export
-download_ipumsr_extract <- function(extract = NULL,
-                                    download_dir = getwd(),
-                                    overwrite = FALSE,
-                                    progress = TRUE,
-                                    ...,
-                                    api_key = Sys.getenv("IPUMS_API_KEY")) {
+download_ipumsr_extract <- function(
+  extract = NULL,
+  download_dir = getwd(),
+  overwrite = FALSE,
+  progress = TRUE,
+  ...,
+  api_key = Sys.getenv("IPUMS_API_KEY")
+) {
   if (!is_interactive()) {
-    cli::cli_warn("{.fn download_ipumsr_extract} is only recommended for interactive use.")
+    cli::cli_warn(
+      "{.fn download_ipumsr_extract} is only recommended for interactive use."
+    )
   }
 
   ipumsr::wait_for_extract(
@@ -47,17 +51,19 @@ download_ipumsr_extract <- function(extract = NULL,
 #' @returns A named list with "data" and "shape" elements containing extract file paths.
 #' @export
 #' @importFrom ipumsr submit_extract
-get_ipumsr_extract_paths <- function(extract = NULL,
-                                     data_file = NULL,
-                                     shape_file = NULL,
-                                     submit_extract = TRUE,
-                                     download_extract = TRUE,
-                                     download_dir = getwd(),
-                                     overwrite = FALSE,
-                                     progress = TRUE,
-                                     refresh = FALSE,
-                                     recursive = TRUE,
-                                     api_key = Sys.getenv("IPUMS_API_KEY")) {
+get_ipumsr_extract_paths <- function(
+  extract = NULL,
+  data_file = NULL,
+  shape_file = NULL,
+  submit_extract = TRUE,
+  download_extract = TRUE,
+  download_dir = getwd(),
+  overwrite = FALSE,
+  progress = TRUE,
+  refresh = FALSE,
+  recursive = TRUE,
+  api_key = Sys.getenv("IPUMS_API_KEY")
+) {
   if (!submit_extract && !download_extract) {
     # FIXME: Add warning for this case
     return(extract)

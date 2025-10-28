@@ -2,14 +2,16 @@
 #'
 #' @inheritParams fmt_perc_value_col
 #' @noRd
-fmt_nhgis_1960 <- function(data,
-                           variable_col = "variable",
-                           column_title_col = "column_title",
-                           value_col = "value",
-                           denominator_prefix = "denominator_",
-                           perc_prefix = "perc_",
-                           join_cols = c("GISJOIN", "YEAR"),
-                           digits = 2) {
+fmt_nhgis_1960 <- function(
+  data,
+  variable_col = "variable",
+  column_title_col = "column_title",
+  value_col = "value",
+  denominator_prefix = "denominator_",
+  perc_prefix = "perc_",
+  join_cols = c("GISJOIN", "YEAR"),
+  digits = 2
+) {
   data <- data |>
     dplyr::mutate(
       # FIXME: These synthetic variable identifiers must be documented
@@ -17,13 +19,23 @@ fmt_nhgis_1960 <- function(data,
         # Population
         .data[[variable_col]] %in% c("B7B001", "B7B002", "B7B003") ~ "B7B00",
         # Total occupied units
-        .data[[variable_col]] %in% c("B64001", "B64002", "B64003", "B64004") ~ "B6400",
+        .data[[variable_col]] %in%
+          c("B64001", "B64002", "B64003", "B64004") ~ "B6400",
         # Total occupied units
         .data[[variable_col]] %in% c("B83001", "B83002") ~ "B8300",
         # Total workers
-        .data[[variable_col]] %in% c("B9D001", "B9D002", "B9D003", "B9D004") ~ "B9D00",
+        .data[[variable_col]] %in%
+          c("B9D001", "B9D002", "B9D003", "B9D004") ~ "B9D00",
         # Commuting workers (reporting means of transportation)
-        .data[[variable_col]] %in% c("B9G001", "B9G002", "B9G003", "B9G004", "B9G005", "B9G006") ~ "B9G00"
+        .data[[variable_col]] %in%
+          c(
+            "B9G001",
+            "B9G002",
+            "B9G003",
+            "B9G004",
+            "B9G005",
+            "B9G006"
+          ) ~ "B9G00"
       )
     )
 
@@ -56,12 +68,14 @@ fmt_nhgis_1960 <- function(data,
 }
 
 #' @noRd
-summarise_nhgis_1960_denominators <- function(data,
-                                              variable_col = "variable",
-                                              column_title_col = "column_title",
-                                              value_col = "value",
-                                              denominator_prefix = "denominator_",
-                                              join_cols = c("GISJOIN", "YEAR")) {
+summarise_nhgis_1960_denominators <- function(
+  data,
+  variable_col = "variable",
+  column_title_col = "column_title",
+  value_col = "value",
+  denominator_prefix = "denominator_",
+  join_cols = c("GISJOIN", "YEAR")
+) {
   denom_variable_col <- paste0(denominator_prefix, variable_col)
 
   if (!has_name(data, denom_variable_col)) {
@@ -78,7 +92,14 @@ summarise_nhgis_1960_denominators <- function(data,
           # Total workers
           "B9D00" = c("B9D001", "B9D002", "B9D003", "B9D004"),
           # Commuting workers (reporting means of transportation)
-          "B9G00" = c("B9G001", "B9G002", "B9G003", "B9G004", "B9G005", "B9G006")
+          "B9G00" = c(
+            "B9G001",
+            "B9G002",
+            "B9G003",
+            "B9G004",
+            "B9G005",
+            "B9G006"
+          )
         )
       )
   }
@@ -86,7 +107,10 @@ summarise_nhgis_1960_denominators <- function(data,
   data |>
     dplyr::filter(!is.na({{ denom_variable_col }})) |>
     dplyr::summarise(
-      "{denominator_prefix}{value_col}" := sum(.data[[value_col]], na.rm = TRUE),
+      "{denominator_prefix}{value_col}" := sum(
+        .data[[value_col]],
+        na.rm = TRUE
+      ),
       .by = all_of(c(join_cols, denom_variable_col))
     ) |>
     dplyr::mutate(
