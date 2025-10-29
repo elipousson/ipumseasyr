@@ -152,7 +152,9 @@ pivot_nhgis_data <- function(
         "CL8AA",
         "BYA003",
         "CM7AA",
-        "AF15001"
+        "AF15001",
+        "B37AA",
+        "B37AB"
       )
   )
 
@@ -189,6 +191,12 @@ pivot_nhgis_data <- function(
               "B37AB"
             ) ~
             denominators[["occupied_units"]], # ~ "A43AA",
+
+          # Owner occupied units
+          paste0("B68A", LETTERS[1:6]) ~ "B37AA",
+
+          # Renter occupied units
+          paste0("B68A", LETTERS[7:12]) ~ "B37AB",
 
           # Families
           .data[[variable_col]] %in%
